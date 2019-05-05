@@ -17,11 +17,29 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaSpecificationExecutor<User>, JpaRepository<User, String> {
 
+
+
+    /**
+     * 根据邮箱查询用户
+     * @param email 邮箱
+     * @return user 用户对象
+     */
+    User findByEmail(String email);
+
+
+    /**
+     * 根据用户名查询用户
+     * @param username 用户名
+     * @return user 用户对象
+     */
+    User findByUsername(String username);
+
+
     /**
      * 删除用户
      *
      * @param id 用户id
-     * @return
+     * @return 受影响行数
      */
     Long deleteUsersById(String id);
 
@@ -29,7 +47,7 @@ public interface UserRepository extends JpaSpecificationExecutor<User>, JpaRepos
      * 批量删除
      *
      * @param ids 用户id集合
-     * @return
+     * @return 受影响行数
      */
     Long deleteUsersByIdIn(List<String> ids);
 }

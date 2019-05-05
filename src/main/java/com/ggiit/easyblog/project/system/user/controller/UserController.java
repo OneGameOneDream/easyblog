@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 /**
  * 用户控制器
@@ -46,20 +45,33 @@ public class UserController {
     @GetMapping("page")
     @ResponseBody
     public ResponseEntity page(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize, @RequestParam(value = "sort", defaultValue = "id") String sort, User user) {
-        return ResponseEntity.ok(userService.findPage(user, PageRequest.of(pageNum-1, pageSize, new Sort(Sort.Direction.DESC, sort))));
+        return ResponseEntity.ok(userService.findPage(user, PageRequest.of(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, sort))));
     }
 
     /**
-     * 更新或新增用户
+     * 更新用户
      *
      * @param user 用户对象
-     * @return 更新或新增后的用户对象
+     * @return 更新后的用户对象
      */
-    @GetMapping("save")
+    @GetMapping("update")
     @ResponseBody
-    public ResponseEntity save(User user) {
-        return ResponseEntity.ok(userService.save(user));
+    public ResponseEntity update(User user) {
+        return ResponseEntity.ok(userService.update(user));
     }
+
+    /**
+     * 新增用户
+     *
+     * @param user 用户对象
+     * @return 新增后的用户对象
+     */
+    @GetMapping("insert")
+    @ResponseBody
+    public ResponseEntity insert(User user) {
+        return ResponseEntity.ok(userService.insert(user));
+    }
+
 
     /**
      * 删除用户

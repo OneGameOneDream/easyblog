@@ -1,19 +1,17 @@
 package com.ggiit.easyblog.project.system.user.service;
 
 import cn.hutool.core.util.StrUtil;
-import com.ggiit.easyblog.common.WebKeys;
-import com.ggiit.easyblog.project.system.user.Queryer.UserQueryer;
+import com.ggiit.easyblog.project.system.user.query.UserQuery;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +24,13 @@ import java.util.Optional;
  */
 @Service
 public class UserServiceImpl implements UserService {
+
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserQueryer userQueryer;
+    private UserQuery userQuery;
 
     /**
      * 通过id查询用户
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<User> findList(User user) {
-        return userRepository.findAll(userQueryer.getSpecification(user));
+        return userRepository.findAll(userQuery.getListSpecification(user));
     }
 
     /**
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Page<User> findPage(User user, Pageable pageable) {
-        return userRepository.findAll(userQueryer.getSpecification(user), pageable);
+        return userRepository.findAll(userQuery.getListSpecification(user), pageable);
     }
 
     /**
@@ -70,19 +71,60 @@ public class UserServiceImpl implements UserService {
      * @return User 更新或新增后的用户对象
      */
     @Override
-    public User save(User user) {
-        return userRepository.save(user);
+    @Transactional(rollbackFor = Exception.class)
+    public User update(User user) {
+        User u = userRepository.getOne(user.getId());
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            logger.warn("用户名:" + u.getUsername() + "已存在!");
+            return null;
+        }
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            logger.warn("邮箱:" + u.getEmail() + "已存在!");
+            return null;
+        }
+        //动态更新
+        if (!StrUtil.isBlank(user.getUsername())) {
+            u.setUsername(user.getUsername());
+        }
+        if (!StrUtil.isBlank(user.getAvatar())) {
+            u.setAvatar(user.getAvatar());
+        }
+        if (!StrUtil.isBlank(user.getPhone())) {
+            u.setPhone(user.getPhone());
+        }
+        if (user.getState() != null) {
+            u.setState(user.getState());
+        }
+        if (!StrUtil.isBlank(user.getEmail())) {
+            u.setEmail(user.getEmail());
+        }
+        if (user.getDelFlag() != null) {
+            u.setDelFlag(user.getDelFlag());
+        }
+        if (!StrUtil.isBlank(user.getPassword())) {
+            u.setPassword(user.getPassword());
+        }
+        return userRepository.save(u);
     }
 
     /**
-     * 批量保存用户
+     * 新增用户信息
      *
-     * @param userList 用户集合
-     * @return List 更新或新增后的用户集合
+     * @param user 用户对象
+     * @return User 新增后的用户
      */
     @Override
-    public List<User> saveAll(List<User> userList) {
-        return userRepository.saveAll(userList);
+    @Transactional(rollbackFor = Exception.class)
+    public User insert(User user) {
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            logger.warn("用户名:" + user.getUsername() + "已存在!");
+            return null;
+        }
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            logger.warn("邮箱:" + user.getEmail() + "已存在!");
+            return null;
+        }
+        return userRepository.save(user);
     }
 
     /**
@@ -92,6 +134,7 @@ public class UserServiceImpl implements UserService {
      * @return 受影响行数
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long deleteById(String id) {
         return userRepository.deleteUsersById(id);
     }
@@ -103,6 +146,7 @@ public class UserServiceImpl implements UserService {
      * @return 受影响行数
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long deleteInBatch(String ids) {
         return userRepository.deleteUsersByIdIn(Arrays.asList(ids.split(",")));
     }

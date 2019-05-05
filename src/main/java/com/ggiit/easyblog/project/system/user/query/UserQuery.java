@@ -1,4 +1,4 @@
-package com.ggiit.easyblog.project.system.user.Queryer;
+package com.ggiit.easyblog.project.system.user.query;
 
 import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.WebKeys;
@@ -17,14 +17,14 @@ import java.util.List;
  * @date 2019.4.29
  */
 @Component
-public class UserQueryer {
+public class UserQuery {
     /**
      * 获取用户查询条件对象
      *
      * @param user 用户对象
      * @return Specification 用户查询条件对象
      */
-    public Specification<User> getSpecification(User user) {
+    public Specification<User> getListSpecification(User user) {
         // Specification查询构造器
         return (root, query, cb) -> {
             //用于暂时存放查询条件的集合
@@ -64,4 +64,5 @@ public class UserQueryer {
             return cb.and(predicatesList.toArray(predicates));
         };
     }
+
 }

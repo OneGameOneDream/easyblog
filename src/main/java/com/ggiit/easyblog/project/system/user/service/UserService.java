@@ -38,20 +38,20 @@ public interface UserService {
     Page<User> findPage(User user,Pageable pageable);
 
     /**
-     * 保存用户信息
+     * 更新用户信息
      *
      * @param user 用户对象
-     * @return User 更新或新增后的用户对象
+     * @return User 更新后的用户对象
      */
-    User save(User user);
+    User update(User user);
 
     /**
-     * 批量保存用户
+     * 新增用户信息
      *
-     * @param userList 用户集合
-     * @return List 更新或新增后的用户集合
+     * @param user 用户对象
+     * @return User 新增后的用户
      */
-    List<User> saveAll(List<User> userList);
+    User insert(User user);
 
     /**
      * 根据id删除用户
