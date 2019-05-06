@@ -1,7 +1,7 @@
 package com.ggiit.easyblog.project.system.user.query;
 
 import cn.hutool.core.util.StrUtil;
-import com.ggiit.easyblog.common.WebKeys;
+import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;

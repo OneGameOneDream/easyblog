@@ -1,11 +1,11 @@
 package com.ggiit.easyblog.project.system.user.controller;
 
+import com.ggiit.easyblog.framework.web.entity.ApiResult;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +30,8 @@ public class UserController {
      */
     @GetMapping("list")
     @ResponseBody
-    public ResponseEntity list(User user) {
-        return ResponseEntity.ok(userService.findList(user));
+    public ApiResult list(User user) {
+        return ApiResult.success(userService.findList(user));
     }
 
     /**
@@ -44,8 +44,8 @@ public class UserController {
      */
     @GetMapping("page")
     @ResponseBody
-    public ResponseEntity page(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize, @RequestParam(value = "sort", defaultValue = "id") String sort, User user) {
-        return ResponseEntity.ok(userService.findPage(user, PageRequest.of(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, sort))));
+    public ApiResult page(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize, @RequestParam(value = "sort", defaultValue = "id") String sort, User user) {
+        return ApiResult.success(userService.findPage(user, PageRequest.of(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, sort))));
     }
 
     /**
@@ -56,8 +56,8 @@ public class UserController {
      */
     @GetMapping("update")
     @ResponseBody
-    public ResponseEntity update(User user) {
-        return ResponseEntity.ok(userService.update(user));
+    public ApiResult update(User user) {
+        return ApiResult.success(userService.update(user));
     }
 
     /**
@@ -68,8 +68,8 @@ public class UserController {
      */
     @GetMapping("insert")
     @ResponseBody
-    public ResponseEntity insert(User user) {
-        return ResponseEntity.ok(userService.insert(user));
+    public ApiResult insert(User user) {
+        return ApiResult.success(userService.insert(user));
     }
 
 
@@ -81,8 +81,8 @@ public class UserController {
      */
     @GetMapping("delete/{id}")
     @ResponseBody
-    public ResponseEntity delete(@PathVariable("id") String id) {
-        return ResponseEntity.ok(userService.deleteById(id));
+    public ApiResult delete(@PathVariable("id") String id) {
+        return ApiResult.success(userService.deleteById(id));
     }
 
     /**
@@ -93,8 +93,8 @@ public class UserController {
      */
     @GetMapping("deleteInBatch/{ids}")
     @ResponseBody
-    public ResponseEntity deleteInBatch(@PathVariable("ids") String ids) {
-        return ResponseEntity.ok(userService.deleteInBatch(ids));
+    public ApiResult deleteInBatch(@PathVariable("ids") String ids) {
+        return ApiResult.success(userService.deleteInBatch(ids));
     }
 
 }

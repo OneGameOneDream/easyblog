@@ -1,8 +1,8 @@
 package com.ggiit.easyblog.project.system.user.service;
 
 import cn.hutool.core.util.StrUtil;
-import com.ggiit.easyblog.project.system.user.query.UserQuery;
 import com.ggiit.easyblog.project.system.user.entity.User;
+import com.ggiit.easyblog.project.system.user.query.UserQuery;
 import com.ggiit.easyblog.project.system.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 用戶业务层实现

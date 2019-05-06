@@ -1,4 +1,4 @@
-package com.ggiit.easyblog.common;
+package com.ggiit.easyblog.common.constant;
 
 /**
  * 系统相关产量
