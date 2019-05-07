@@ -28,5 +28,26 @@ public class WebKeys {
      */
     public static final Boolean USER_STATUS_LOCKED = false;
     /* *****************************************************************/
+    /*************** 用户相关 *************/
+    /**
+     * 登录用户信息
+     */
+    public final static String USER_KEY = "userInfo";
+    /**
+     * 登录用户名
+     */
+    public final static String USERNAME_KEY = "username";
+    /**
+     * 登录时间
+     */
+    public final static String USER_LOGIN_DATE_KEY = "loginDate";
+    /**
+     * 登录IP
+     */
+    public final static String USER_LOGIN_IP_KEY = "loginIp";
+    /**
+     * 登录用户权限set
+     */
+    public final static String USER_PERMISSION_KEY = "permissionSet";
 
 }

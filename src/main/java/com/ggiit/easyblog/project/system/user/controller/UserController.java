@@ -1,6 +1,6 @@
 package com.ggiit.easyblog.project.system.user.controller;
 
-import com.ggiit.easyblog.framework.web.entity.ApiResult;
+import com.ggiit.easyblog.common.annotation.Log;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,11 @@ public class UserController {
      *
      * @return 用户列表数据
      */
+    @Log("用户列表数据")
     @GetMapping("list")
     @ResponseBody
-    public ApiResult list(User user) {
-        return ApiResult.success(userService.findList(user));
+    public Object list(User user) {
+        return userService.findList(user);
     }
 
     /**
@@ -44,8 +45,8 @@ public class UserController {
      */
     @GetMapping("page")
     @ResponseBody
-    public ApiResult page(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize, @RequestParam(value = "sort", defaultValue = "id") String sort, User user) {
-        return ApiResult.success(userService.findPage(user, PageRequest.of(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, sort))));
+    public Object page(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize, @RequestParam(value = "sort", defaultValue = "id") String sort, User user) {
+        return userService.findPage(user, PageRequest.of(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, sort)));
     }
 
     /**
@@ -56,8 +57,8 @@ public class UserController {
      */
     @GetMapping("update")
     @ResponseBody
-    public ApiResult update(User user) {
-        return ApiResult.success(userService.update(user));
+    public Object update(User user) {
+        return userService.update(user);
     }
 
     /**
@@ -68,8 +69,8 @@ public class UserController {
      */
     @GetMapping("insert")
     @ResponseBody
-    public ApiResult insert(User user) {
-        return ApiResult.success(userService.insert(user));
+    public Object insert(User user) {
+        return userService.insert(user);
     }
 
 
@@ -81,8 +82,8 @@ public class UserController {
      */
     @GetMapping("delete/{id}")
     @ResponseBody
-    public ApiResult delete(@PathVariable("id") String id) {
-        return ApiResult.success(userService.deleteById(id));
+    public Object delete(@PathVariable("id") String id) {
+        return userService.deleteById(id);
     }
 
     /**
@@ -93,8 +94,8 @@ public class UserController {
      */
     @GetMapping("deleteInBatch/{ids}")
     @ResponseBody
-    public ApiResult deleteInBatch(@PathVariable("ids") String ids) {
-        return ApiResult.success(userService.deleteInBatch(ids));
+    public Object deleteInBatch(@PathVariable("ids") String ids) {
+        return userService.deleteInBatch(ids);
     }
 
 }
