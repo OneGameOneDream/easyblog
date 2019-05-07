@@ -33,6 +33,7 @@ public class ApiResult {
     public ApiResult() {
         this.code = ResponseCode.SUCCESS.getCode();
         this.message = ResponseCode.SUCCESS.getMsg();
+        this.value = null;
     }
 
     /**

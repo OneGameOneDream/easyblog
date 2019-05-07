@@ -1,16 +1,19 @@
 package com.ggiit.easyblog.framework.aspectj;
 
+import com.ggiit.easyblog.common.annotation.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 
@@ -43,14 +46,18 @@ public class LogAop {
         startTime.set(System.currentTimeMillis());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Log syslog = method.getAnnotation(Log.class);
         //打印请求的内容
         //获取请求头中的User-Agent
         log.info("=================方法调用开始=================");
+        log.info("方法说明：{}",syslog.value());
         log.info("请求路径：{}", request.getRequestURL().toString());
         log.info("IP : {}", request.getRemoteAddr());
         log.info("请求类型：{}", request.getMethod());
         log.info("类方法 : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        log.info("请求参数 : {} " + Arrays.toString(joinPoint.getArgs()));
+        log.info("请求参数 : " + Arrays.toString(joinPoint.getArgs()));
     }
 
     /**

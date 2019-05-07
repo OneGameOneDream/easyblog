@@ -16,6 +16,7 @@ public enum ResponseCode {
      * 成功
      */
     SUCCESS(200, "成功"),
+
     /**
      * 权限不足
      */
@@ -47,6 +48,7 @@ public enum ResponseCode {
 
     private int code;
     private String msg;
+
 
     /**
      * 获取响应信息

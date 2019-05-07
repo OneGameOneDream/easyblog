@@ -26,16 +26,19 @@ public interface UserService {
     /**
      * 查询用户列表信息
      *
+     * @param user 用戶对象
      * @return List 用户集合
      */
     List<User> findList(User user);
+
+
     /**
      * 查询分页数据
-     *
-     * @param pageable 分页配置
+     * @param user  用戶对象
+     * @param pageable  分页配置
      * @return Page 分页对象
      */
-    Page<User> findPage(User user,Pageable pageable);
+    Page<User> findPage(User user, Pageable pageable);
 
     /**
      * 更新用户信息
