@@ -1,12 +1,11 @@
 package com.ggiit.easyblog.framework.aspectj;
 
 import com.ggiit.easyblog.common.annotation.Log;
+import com.ggiit.easyblog.common.constant.WebKeys;
+import com.ggiit.easyblog.common.util.security.UserUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -52,9 +51,10 @@ public class LogAop {
         //打印请求的内容
         //获取请求头中的User-Agent
         log.info("=================方法调用开始=================");
-        log.info("方法说明：{}",syslog.value());
+        log.info("方法描述：{}", syslog.value());
+        log.info("请求用户：{}", UserUtils.getUser().getNickname());
         log.info("请求路径：{}", request.getRequestURL().toString());
-        log.info("IP : {}", request.getRemoteAddr());
+        log.info("请求IP : {}", request.getRemoteAddr());
         log.info("请求类型：{}", request.getMethod());
         log.info("类方法 : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
         log.info("请求参数 : " + Arrays.toString(joinPoint.getArgs()));
@@ -68,6 +68,21 @@ public class LogAop {
         //处理完请求后，返回内容
         log.info("方法返回值：{}", ret);
         log.info("方法执行时间：{}毫秒", (System.currentTimeMillis() - startTime.get()));
+        log.info("方法执行结果：{}", WebKeys.METHOD_SUCCESS);
+        log.info("=================方法调用结束=================");
+    }
+
+    /**
+     * 拦截异常操作
+     *
+     * @param e 异常
+     */
+    @AfterThrowing(value = "logPointCut()", throwing = "e")
+    public void doAfterThrowing(Exception e) {
+        // 记录本地异常日志
+        log.error("方法调用异常");
+        log.error("异常信息：{}", e.getMessage());
+        log.info("方法执行结果：{}", WebKeys.METHOD_FAIL);
         log.info("=================方法调用结束=================");
     }
 }

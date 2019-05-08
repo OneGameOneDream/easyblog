@@ -17,8 +17,6 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaSpecificationExecutor<User>, JpaRepository<User, String> {
 
-
-
     /**
      * 根据邮箱查询用户
      * @param email 邮箱

@@ -7,7 +7,6 @@ import com.ggiit.easyblog.project.system.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -17,10 +16,9 @@ import org.springframework.web.bind.annotation.*;
  * @author gao
  * @date 2019.4.23
  */
-@Controller
-@RequestMapping("/system/user")
+@RestController
+@RequestMapping("api/v1/system/user")
 public class UserController {
-
     @Autowired
     private UserService userService;
 
@@ -31,7 +29,6 @@ public class UserController {
      */
     @Log("用户列表数据")
     @GetMapping("list")
-    @ResponseBody
     public ApiResult list(User user) {
         return ApiResult.success(userService.findList(user));
     }
@@ -46,7 +43,6 @@ public class UserController {
      */
     @Log("用户分页数据")
     @GetMapping("page")
-    @ResponseBody
     public ApiResult page(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize, @RequestParam(value = "sort", defaultValue = "id") String sort, User user) {
         return ApiResult.success(userService.findPage(user, PageRequest.of(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, sort))));
     }
@@ -58,8 +54,7 @@ public class UserController {
      * @return 更新后的用户对象
      */
     @Log("更新用户数据")
-    @PostMapping("update")
-    @ResponseBody
+    @PutMapping("update")
     public ApiResult update(User user) {
         return ApiResult.success(userService.update(user));
     }
@@ -72,7 +67,6 @@ public class UserController {
      */
     @Log("新增用户数据")
     @PostMapping("insert")
-    @ResponseBody
     public ApiResult insert(User user) {
         return ApiResult.success(userService.insert(user));
     }
@@ -85,8 +79,7 @@ public class UserController {
      * @return 受影响行数
      */
     @Log("删除用户数据")
-    @PostMapping("delete/{id}")
-    @ResponseBody
+    @DeleteMapping("delete/{id}")
     public ApiResult delete(@PathVariable("id") String id) {
         return ApiResult.success(userService.deleteById(id));
     }
@@ -98,8 +91,7 @@ public class UserController {
      * @return 受影响行数
      */
     @Log("批量删除用户数据")
-    @PostMapping("deleteInBatch/{ids}")
-    @ResponseBody
+    @DeleteMapping("deleteInBatch/{ids}")
     public ApiResult deleteInBatch(@PathVariable("ids") String ids) {
         return ApiResult.success(userService.deleteInBatch(ids));
     }

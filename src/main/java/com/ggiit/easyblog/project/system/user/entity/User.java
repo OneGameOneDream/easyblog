@@ -5,8 +5,11 @@ import com.ggiit.easyblog.framework.web.entity.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -20,16 +23,21 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
     /**
      * 用户名
      */
     @Column(name = "USERNAME_", nullable = false, length = 50)
     private String username;
     /**
+     * 昵称
+     */
+    @Column(name = "NICKNAME_", nullable = false, length = 50)
+    private String nickname;
+    /**
      * 密码
      */
-    @Column(name = "PASSWORD_", nullable = false, length = 50)
+    @Column(name = "PASSWORD_", nullable = false, length = 200)
     private String password;
     /**
      * 头像
@@ -68,4 +76,66 @@ public class User extends BaseEntity {
      */
     @Column(name = "DEL_FLAG_", length = 1)
     private Boolean delFlag;
+
+    /**
+     * 角色集合
+     */
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(
+//            name = "T_SYS_USER_ROlE",
+//            joinColumns = {@JoinColumn(name = "USER_ID_", referencedColumnName = "ID_")},
+//            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID_", referencedColumnName = "ID_")})
+//    private Set<Role> roleSet;
+
+
+    /**
+     * 获取用户权限集合
+     *
+     * @return 用户权限集合
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+
+    /**
+     * 账户是否未过期
+     *
+     * @return true or false
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    /**
+     * 账户是否未锁定
+     *
+     * @return true or false
+     */
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.state == null ? true : this.state;
+    }
+
+    /**
+     * 密码是否未过期
+     *
+     * @return true or false
+     */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    /**
+     * 账户是否激活
+     *
+     * @return true or false
+     */
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

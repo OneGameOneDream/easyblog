@@ -132,6 +132,16 @@ public class ApiResult {
     /**
      * 返回错误消息
      *
+     * @param responseCode 响应对象
+     * @return 警告消息
+     */
+    public static ApiResult error(ResponseCode responseCode) {
+        return new ApiResult(responseCode.getCode(), responseCode.getMsg(), null);
+    }
+
+    /**
+     * 返回错误消息
+     *
      * @param message 返回内容
      * @param value   数据对象
      * @return 警告消息

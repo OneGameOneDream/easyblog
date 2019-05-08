@@ -16,7 +16,7 @@
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log_path}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>D:\\easyblog\\log\\logback.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>D:\\easyblog\\log\\temp\\logback.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -25,38 +25,38 @@
 
     <!--普通日志输出到控制台-->
     <root level="info">
-        <appender-ref ref="console" />
+        <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </root>
 
     <!--监控sql日志输出 -->
     <logger name="jdbc.sqlonly" level="INFO" additivity="false">
-        <appender-ref ref="console" />
+        <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
 
     <logger name="jdbc.resultset" level="ERROR" additivity="false">
-        <appender-ref ref="console" />
+        <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
 
     <logger name="jdbc.resultsettable" level="INFO" additivity="false">
-        <appender-ref ref="console" />
+        <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
 
     <logger name="jdbc.connection" level="OFF" additivity="false">
-        <appender-ref ref="console" />
+        <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
 
     <logger name="jdbc.sqltiming" level="OFF" additivity="false">
-        <appender-ref ref="console" />
+        <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
 
     <logger name="jdbc.audit" level="OFF" additivity="false">
-        <appender-ref ref="console" />
+        <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
 </configuration>
