@@ -1,14 +1,15 @@
 package com.ggiit.easyblog.project.system.role.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
+import com.ggiit.easyblog.project.system.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * 角色实体类
@@ -45,6 +46,7 @@ public class Role extends BaseEntity {
     /**
      * 角色拥有用户集合
      */
-//    @ManyToMany(mappedBy = "roleSet", fetch = FetchType.LAZY)
-//    private Set<User> userSet;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "roleSet", fetch = FetchType.LAZY)
+    private Set<User> userSet;
 }

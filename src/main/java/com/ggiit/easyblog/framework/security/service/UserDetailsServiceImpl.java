@@ -1,5 +1,6 @@
 package com.ggiit.easyblog.framework.security.service;
 
+import com.ggiit.easyblog.common.annotation.Log;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @return UserDetails对象
      * @throws UsernameNotFoundException 用户名不存在
      */
-//    @Log("用户登陆验证")
+    @Log("用户登陆验证")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //根据用户名查找用户

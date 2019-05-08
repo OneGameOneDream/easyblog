@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * @date 2019.4.23
  */
 @RestController
-@RequestMapping("api/v1/system/user")
+@RequestMapping("/sys/user")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -38,13 +38,13 @@ public class UserController {
      *
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @param sort     排序字段
      * @return 分页数据
      */
     @Log("用户分页数据")
     @GetMapping("page")
-    public ApiResult page(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum, @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize, @RequestParam(value = "sort", defaultValue = "id") String sort, User user) {
-        return ApiResult.success(userService.findPage(user, PageRequest.of(pageNum - 1, pageSize, new Sort(Sort.Direction.DESC, sort))));
+    public ApiResult page(User user, @RequestParam(name="pageNum", defaultValue="0") Integer pageNum,
+                          @RequestParam(name="pageSize", defaultValue="5") Integer pageSize) {
+        return ApiResult.success(userService.findPage(user, PageRequest.of(pageNum, pageSize)));
     }
 
     /**

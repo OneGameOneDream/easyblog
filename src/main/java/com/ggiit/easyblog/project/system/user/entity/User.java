@@ -1,7 +1,9 @@
 package com.ggiit.easyblog.project.system.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
+import com.ggiit.easyblog.project.system.role.entity.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * 用户实体类
@@ -80,12 +83,13 @@ public class User extends BaseEntity implements UserDetails {
     /**
      * 角色集合
      */
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "T_SYS_USER_ROlE",
-//            joinColumns = {@JoinColumn(name = "USER_ID_", referencedColumnName = "ID_")},
-//            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID_", referencedColumnName = "ID_")})
-//    private Set<Role> roleSet;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "T_SYS_USER_ROlE",
+            joinColumns = {@JoinColumn(name = "USER_ID_", referencedColumnName = "ID_")},
+            inverseJoinColumns = {@JoinColumn(name = "ROLE_ID_", referencedColumnName = "ID_")})
+    @JsonIgnore
+    private Set<Role> roleSet;
 
 
     /**

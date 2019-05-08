@@ -1,5 +1,6 @@
 package com.ggiit.easyblog.framework.aspectj;
 
+import cn.hutool.http.HttpUtil;
 import com.ggiit.easyblog.common.annotation.Log;
 import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.common.util.security.UserUtils;
@@ -43,8 +44,7 @@ public class LogAop {
     public void doBefore(JoinPoint joinPoint) {
         //开始计时
         startTime.set(System.currentTimeMillis());
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         Log syslog = method.getAnnotation(Log.class);

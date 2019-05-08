@@ -1,6 +1,7 @@
 package com.ggiit.easyblog.framework.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,17 +56,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // 因为我们是基于 token 进行验证的，所以 csrf 和 session 我们这里都不需要
-        http.csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-//                // 跨域支持
-//                .cors().and()
+        http
                 .authorizeRequests()
-                // 配置可以访问的接口
-                .antMatchers(antMatchers.split(",")).permitAll()
-                //除了上面的接口，其它接口都必须鉴权认证
+                .antMatchers("/", "/home").permitAll()
                 .anyRequest().authenticated().and()
                 .formLogin().and()
-                .logout().permitAll();
+                .logout()
+                .permitAll();
     }
 }
