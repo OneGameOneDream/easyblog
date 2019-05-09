@@ -1,5 +1,6 @@
 package com.ggiit.easyblog.framework.jpa;
 
+import com.ggiit.easyblog.common.util.security.UserUtils;
 import org.springframework.data.domain.AuditorAware;
 
 import java.util.Optional;
@@ -14,6 +15,6 @@ import java.util.Optional;
 public class UserIDAuditorBean implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of("gao");
+        return Optional.ofNullable(UserUtils.getUser().getUsername());
     }
 }

@@ -59,6 +59,11 @@ public class UserQuery {
                 Predicate statePredicate = cb.equal(root.get("state"), user.getState());
                 predicatesList.add(statePredicate);
             }
+            //用户昵称
+            if (user.getNickname() != null) {
+                Predicate nickPredicate = cb.equal(root.get("nickname"), user.getNickname());
+                predicatesList.add(nickPredicate);
+            }
             //最终将查询条件拼好然后return
             Predicate[] predicates = new Predicate[predicatesList.size()];
             return cb.and(predicatesList.toArray(predicates));

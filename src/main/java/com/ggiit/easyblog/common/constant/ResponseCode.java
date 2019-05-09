@@ -44,7 +44,29 @@ public enum ResponseCode {
     /**
      * 未知错误
      */
-    UNKNOW_ERROR(16000, "未知错误");
+    UNKNOW_ERROR(16000, "未知错误"),
+
+    /**
+     * 用戶名已存在错误
+     */
+    USERNAME_EXIST(17000, "用户名已存在"),
+    /**
+     * 角色名已存在
+     */
+    ROLE_NAME_EXIST(17001, "角色名已存在"),
+    /**
+     * 菜单名已存在
+     */
+    MENU_NAME_EXIST(17002, "菜单名已存在"),
+    /**
+     * Email已存在
+     */
+    EMAIL_EXIST(17003, "Email已存在"),
+    /**
+     * 用户名不存在
+     */
+    USER_NOT_FOUND(17004, "用户名不存在");
+
 
     private int code;
     private String msg;

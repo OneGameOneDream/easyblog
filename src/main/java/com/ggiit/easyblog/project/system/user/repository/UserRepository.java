@@ -19,6 +19,7 @@ public interface UserRepository extends JpaSpecificationExecutor<User>, JpaRepos
 
     /**
      * 根据邮箱查询用户
+     *
      * @param email 邮箱
      * @return user 用户对象
      */
@@ -27,6 +28,7 @@ public interface UserRepository extends JpaSpecificationExecutor<User>, JpaRepos
 
     /**
      * 根据用户名查询用户
+     *
      * @param username 用户名
      * @return user 用户对象
      */
@@ -39,7 +41,7 @@ public interface UserRepository extends JpaSpecificationExecutor<User>, JpaRepos
      * @param id 用户id
      * @return 受影响行数
      */
-    Long deleteUsersById(String id);
+    Long deleteUserById(String id);
 
     /**
      * 批量删除

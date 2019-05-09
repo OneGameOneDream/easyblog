@@ -5,10 +5,8 @@ import com.ggiit.easyblog.project.system.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 /**
- * 用户业务层
+ * 用户业务层接口
  *
  * @author gao
  * @date 2019.4.23
@@ -23,19 +21,12 @@ public interface UserService {
      */
     User get(String id);
 
-    /**
-     * 查询用户列表信息
-     *
-     * @param user 用戶对象
-     * @return List 用户集合
-     */
-    List<User> findList(User user);
-
 
     /**
      * 查询分页数据
-     * @param user  用戶对象
-     * @param pageable  分页配置
+     *
+     * @param user     用戶对象
+     * @param pageable 分页配置
      * @return Page 分页对象
      */
     Page<User> findPage(User user, Pageable pageable);
@@ -62,7 +53,7 @@ public interface UserService {
      * @param id 用户编号
      * @return 受影响行数
      */
-    Long deleteById(String id);
+    Long deleteUserById(String id);
 
 
     /**
@@ -71,6 +62,6 @@ public interface UserService {
      * @param ids 多个用户编号（用_隔开）
      * @return 受影响行数
      */
-    Long deleteInBatch(String ids);
+    Long deleteUsersByIdIn(String ids);
 
 }

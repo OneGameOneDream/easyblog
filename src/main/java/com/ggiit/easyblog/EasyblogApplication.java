@@ -23,13 +23,19 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @PropertySource("classpath:application-security.properties")
 @PropertySource("classpath:application-log.properties")
 public class EasyblogApplication {
-    @Bean
-    public AuditorAware<String> auditorAware() {
-        return new UserIDAuditorBean();
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(EasyblogApplication.class, args);
     }
 
+
+    /**
+     * 注冊自动审核
+     *
+     * @return
+     */
+    @Bean
+    public AuditorAware<String> auditorAware() {
+        return new UserIDAuditorBean();
+    }
 }

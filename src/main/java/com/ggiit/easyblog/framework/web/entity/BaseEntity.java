@@ -1,6 +1,7 @@
 package com.ggiit.easyblog.framework.web.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode
 public abstract class BaseEntity implements Serializable {
     /**
      * 编号
@@ -69,6 +71,13 @@ public abstract class BaseEntity implements Serializable {
      */
     @Column(name = "REMARK_")
     private String remark;
+
+    /**
+     * 删除标识：1启用、0删除
+     */
+    @Column(name = "DEL_FLAG_", length = 1)
+    private Boolean delFlag;
+
 
 }
 

@@ -1,11 +1,11 @@
 package com.ggiit.easyblog.project.system.user.service;
 
 import cn.hutool.core.util.StrUtil;
+import com.ggiit.easyblog.common.exception.EmailExistException;
+import com.ggiit.easyblog.common.exception.UsernameExistException;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.query.UserQuery;
 import com.ggiit.easyblog.project.system.user.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * 用戶业务层实现
@@ -24,10 +23,15 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
+    /**
+     * 用户持久层对象
+     */
     @Autowired
     private UserRepository userRepository;
+
+    /**
+     * 用户查询器对象
+     */
     @Autowired
     private UserQuery userQuery;
 
@@ -42,15 +46,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.getOne(id);
     }
 
-    /**
-     * 查询用户列表信息
-     *
-     * @return List 用户集合
-     */
-    @Override
-    public List<User> findList(User user) {
-        return userRepository.findAll(userQuery.getListSpecification(user));
-    }
 
     /**
      * 查询分页数据
@@ -73,35 +68,52 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public User update(User user) {
         User u = userRepository.getOne(user.getId());
-        if (userRepository.findByUsername(user.getUsername()) != null) {
-            logger.warn("用户名:" + u.getUsername() + "已存在!");
-            return null;
+        if (userRepository.findByUsername(user.getUsername()) != null && !user.getId().equals(u.getId())) {
+            throw new UsernameExistException();
         }
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            logger.warn("邮箱:" + u.getEmail() + "已存在!");
-            return null;
+        if (userRepository.findByEmail(user.getEmail()) != null && !user.getId().equals(u.getId())) {
+            throw new EmailExistException();
         }
         //动态更新
+        //用户名
         if (!StrUtil.isBlank(user.getUsername())) {
             u.setUsername(user.getUsername());
         }
+        //用户头像
         if (!StrUtil.isBlank(user.getAvatar())) {
             u.setAvatar(user.getAvatar());
         }
+        //用户电话
         if (!StrUtil.isBlank(user.getPhone())) {
             u.setPhone(user.getPhone());
         }
+        //用户状态
         if (user.getState() != null) {
             u.setState(user.getState());
         }
+        //用户邮箱
         if (!StrUtil.isBlank(user.getEmail())) {
             u.setEmail(user.getEmail());
         }
+        //用户删除标识
         if (user.getDelFlag() != null) {
             u.setDelFlag(user.getDelFlag());
         }
+        //用户密码
         if (!StrUtil.isBlank(user.getPassword())) {
             u.setPassword(user.getPassword());
+        }
+        //用户昵称
+        if (!StrUtil.isBlank(user.getNickname())) {
+            u.setNickname(user.getNickname());
+        }
+        //用户登陆ip
+        if (!StrUtil.isBlank(user.getLoginIp())) {
+            u.setLoginIp(user.getLoginIp());
+        }
+        //用户登陆时间
+        if (user.getLoginDate() != null) {
+            u.setLoginDate(user.getLoginDate());
         }
         return userRepository.save(u);
     }
@@ -116,12 +128,10 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public User insert(User user) {
         if (userRepository.findByUsername(user.getUsername()) != null) {
-            logger.warn("用户名:" + user.getUsername() + "已存在!");
-            return null;
+            throw new UsernameExistException();
         }
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            logger.warn("邮箱:" + user.getEmail() + "已存在!");
-            return null;
+            throw new EmailExistException();
         }
         return userRepository.save(user);
     }
@@ -134,8 +144,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long deleteById(String id) {
-        return userRepository.deleteUsersById(id);
+    public Long deleteUserById(String id) {
+        return userRepository.deleteUserById(id);
     }
 
     /**
@@ -146,7 +156,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long deleteInBatch(String ids) {
+    public Long deleteUsersByIdIn(String ids) {
         return userRepository.deleteUsersByIdIn(Arrays.asList(ids.split(",")));
     }
 }

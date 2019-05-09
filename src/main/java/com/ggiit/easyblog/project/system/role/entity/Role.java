@@ -3,6 +3,7 @@ package com.ggiit.easyblog.project.system.role.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
+import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ public class Role extends BaseEntity {
     @Column(name = "NAME_", nullable = false, length = 50)
     private String name;
     /**
-     * 角色权限字符串
+     * 角色权限字符串标识
      */
     @Column(name = "KEY_", nullable = false, length = 100)
     private String key;
@@ -49,4 +50,14 @@ public class Role extends BaseEntity {
     @JsonIgnore
     @ManyToMany(mappedBy = "roleSet", fetch = FetchType.LAZY)
     private Set<User> userSet;
+
+    /**
+     * 菜单权限集合
+     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "T_SYS_ROLE_MENU",
+            joinColumns = {@JoinColumn(name = "ROLE_ID_", referencedColumnName = "ID_")},
+            inverseJoinColumns = {@JoinColumn(name = "MENU_ID_", referencedColumnName = "ID_")})
+    private Set<Menu> menuSet;
 }
