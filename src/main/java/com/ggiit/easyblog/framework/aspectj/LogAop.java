@@ -4,11 +4,14 @@ import com.ggiit.easyblog.common.annotation.Log;
 import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.common.util.security.UserUtils;
 import com.ggiit.easyblog.project.system.user.entity.User;
+import com.ggiit.easyblog.project.system.user.repository.UserRepository;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -32,6 +35,9 @@ import java.util.List;
 @Component
 public class LogAop {
 
+    @Autowired
+    private UserRepository userRepository;
+
     private ThreadLocal<Long> startTime = new ThreadLocal<>();
 
     /**
@@ -54,9 +60,20 @@ public class LogAop {
         Log syslog = method.getAnnotation(Log.class);
         //当前登陆用户
         User user = UserUtils.getUser();
-        //用户角色
+        //用户角色集合
         List<String> roleNameList = new ArrayList<>();
-        user.getAuthorities().forEach(role -> roleNameList.add(role.toString()));
+        //判断用户是否存在，存在即取其角色
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            for (GrantedAuthority ga : user.getAuthorities()) {
+                if (ga.toString().contains("role")) {
+                    //去掉角色前缀
+                    roleNameList.add(ga.toString().replace(WebKeys.ROLE_PREFIX, ""));
+                }
+            }
+        } else {
+            //否则用户角色为无
+            roleNameList.add("无");
+        }
         String roleArr[] = roleNameList.toArray(new String[roleNameList.size()]);
         //打印请求的内容
         //获取请求头中的User-Agent

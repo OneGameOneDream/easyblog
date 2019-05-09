@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : easyblog
+ Source Server         : mysql
  Source Server Type    : MySQL
- Source Server Version : 80015
+ Source Server Version : 50721
  Source Host           : localhost:3306
  Source Schema         : easyblog
 
  Target Server Type    : MySQL
- Target Server Version : 80015
+ Target Server Version : 50721
  File Encoding         : 65001
 
- Date: 09/05/2019 19:43:54
+ Date: 09/05/2019 22:45:12
 */
 
 SET NAMES utf8mb4;
@@ -23,7 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `hibernate_sequence`;
 CREATE TABLE `hibernate_sequence`  (
   `next_val` bigint(20) NULL DEFAULT NULL
-) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Records of hibernate_sequence
@@ -88,11 +88,13 @@ INSERT INTO `t_sys_role` VALUES ('057cf4fbc8f54d43b6cb9607448efd36', '管理员'
 -- ----------------------------
 DROP TABLE IF EXISTS `t_sys_role_menu`;
 CREATE TABLE `t_sys_role_menu`  (
-  `ROLE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `MENU_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `ROLE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色ID',
+  `MENU_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '菜单ID',
   PRIMARY KEY (`ROLE_ID_`, `MENU_ID_`) USING BTREE,
-  INDEX `FKr5i33ph3r4hmg5eh8mto3lakn`(`MENU_ID_`) USING BTREE
-) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+  INDEX `FKr5i33ph3r4hmg5eh8mto3lakn`(`MENU_ID_`) USING BTREE,
+  CONSTRAINT `FKr5i33ph3r4hmg5eh8mto3lakn` FOREIGN KEY (`MENU_ID_`) REFERENCES `t_sys_menu` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FKx42dae4853fggf3xdgou9qhd` FOREIGN KEY (`ROLE_ID_`) REFERENCES `t_sys_role` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色菜单关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_sys_role_menu
@@ -137,7 +139,7 @@ INSERT INTO `t_sys_user` VALUES ('8a0887026a48d517016a48d5535f0006', 'li6', '横
 INSERT INTO `t_sys_user` VALUES ('8a0887026a48d517016a48d5535f0007', 'li7', '很傻髚', '$2a$10$uneM71X4Cvxr/6yQMlNf1uNKwafhFwt6hNfz3TZSChgWYvpfVVao6', NULL, '44359965886@qq.com', 1, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `t_sys_user` VALUES ('8a0887026a48d517016a48d5535f0008', 'li8', '郑爽', '$2a$10$uneM71X4Cvxr/6yQMlNf1uNKwafhFwt6hNfz3TZSChgWYvpfVVao6', NULL, '44359969956@qq.com', 1, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `t_sys_user` VALUES ('8a0887026a48d517016a48d553600009', 'li9', 'i傲天', '$2a$10$uneM71X4Cvxr/6yQMlNf1uNKwafhFwt6hNfz3TZSChgWYvpfVVao6', NULL, '44359960056@qq.com', 1, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `t_sys_user` VALUES ('8a0887026a8611d5016a86848f250000', 'gao', '高瑞春', '$2a$10$uneM71X4Cvxr/6yQMlNf1uNKwafhFwt6hNfz3TZSChgWYvpfVVao6', NULL, '44359963@qq.com', 1, NULL, '0:0:0:0:0:0:0:1', '2019-05-09 11:24:15', 1, 'gao', '2019-05-05 05:43:15', 'gao', '2019-05-09 11:24:15', NULL);
+INSERT INTO `t_sys_user` VALUES ('8a0887026a8611d5016a86848f250000', 'gao', '高瑞春', '$2a$10$uneM71X4Cvxr/6yQMlNf1uNKwafhFwt6hNfz3TZSChgWYvpfVVao6', NULL, '44359963@qq.com', 1, NULL, '0:0:0:0:0:0:0:1', '2019-05-09 13:57:23', 1, 'gao', '2019-05-05 05:43:15', 'gao', '2019-05-09 13:57:23', NULL);
 
 -- ----------------------------
 -- Table structure for t_sys_user_role

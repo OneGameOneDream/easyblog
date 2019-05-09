@@ -28,8 +28,8 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
-public abstract class BaseEntity implements Serializable {
+public abstract class BaseEntity {
+
     /**
      * 编号
      */

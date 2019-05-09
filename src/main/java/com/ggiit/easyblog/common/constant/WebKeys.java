@@ -46,7 +46,15 @@ public class WebKeys {
      * 账号状态true:启用false:禁用
      */
     public static final Boolean USER_STATUS_LOCKED = false;
+
     /*************** 用户相关End *************/
+    /***************角色相关****************/
+    /**
+     * SpringSecurity角色前缀
+     */
+    public static final String ROLE_PREFIX = "role_";
+
+    /**************************************/
     /***************日志相关****************/
     /**
      * 方法执行成功

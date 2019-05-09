@@ -2,6 +2,7 @@ package com.ggiit.easyblog.project.system.user.entity;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.role.entity.Role;
@@ -99,7 +100,7 @@ public class User extends BaseEntity implements UserDetails {
         List<GrantedAuthority> auths = new ArrayList<>();
         //用户角色
         for (Role role : getRoleSet()) {
-            auths.add(new SimpleGrantedAuthority("role_"+role.getKey()));
+            auths.add(new SimpleGrantedAuthority(WebKeys.ROLE_PREFIX + role.getKey()));
             //获取用户的菜单权限
             for (Menu menu : role.getMenuSet()) {
                 if (!StrUtil.isBlank(menu.getPermission())) {
