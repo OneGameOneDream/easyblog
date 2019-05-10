@@ -1,5 +1,6 @@
 package com.ggiit.easyblog.framework.aspectj;
 
+import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.annotation.Log;
 import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.common.util.security.UserUtils;
@@ -35,9 +36,6 @@ import java.util.List;
 @Component
 public class LogAop {
 
-    @Autowired
-    private UserRepository userRepository;
-
     private ThreadLocal<Long> startTime = new ThreadLocal<>();
 
     /**
@@ -62,10 +60,10 @@ public class LogAop {
         User user = UserUtils.getUser();
         //用户角色集合
         List<String> roleNameList = new ArrayList<>();
-        //判断用户是否存在，存在即取其角色
-        if (userRepository.findByUsername(user.getUsername()) != null) {
+        //不是匿名用户，即取其角色
+        if (!user.getNickname().equals(WebKeys.ANONYMOUS_USER)) {
             for (GrantedAuthority ga : user.getAuthorities()) {
-                if (ga.toString().contains("role")) {
+                if (ga.toString().contains(WebKeys.ROLE_PREFIX)) {
                     //去掉角色前缀
                     roleNameList.add(ga.toString().replace(WebKeys.ROLE_PREFIX, ""));
                 }

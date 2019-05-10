@@ -46,13 +46,17 @@ public class WebKeys {
      * 账号状态true:启用false:禁用
      */
     public static final Boolean USER_STATUS_LOCKED = false;
+    /**
+     * 匿名用户(在security中，严格区分大小写。例：role_admin,ROLE_admin,role_admin无法被识别为角色)
+     */
+    public static final String ANONYMOUS_USER = "匿名用户";
 
     /*************** 用户相关End *************/
     /***************角色相关****************/
     /**
      * SpringSecurity角色前缀
      */
-    public static final String ROLE_PREFIX = "role_";
+    public static final String ROLE_PREFIX = "ROLE_";
 
     /**************************************/
     /***************日志相关****************/

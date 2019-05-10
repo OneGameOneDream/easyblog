@@ -6,6 +6,7 @@ import com.ggiit.easyblog.common.exception.MenuNameExistException;
 import com.ggiit.easyblog.common.exception.RoleNameExistException;
 import com.ggiit.easyblog.common.exception.UsernameExistException;
 import com.ggiit.easyblog.framework.web.entity.ApiResult;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -59,6 +60,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ApiResult usernameNotFoundException() {
         return ApiResult.error(ResponseCode.USER_NOT_FOUND);
+    }
+
+    /**
+     * 接口无权访问
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ApiResult accessDeniedException() {
+        return ApiResult.error(ResponseCode.NO_PERMISSION);
     }
 
     /**

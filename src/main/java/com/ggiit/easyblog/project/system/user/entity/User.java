@@ -92,24 +92,26 @@ public class User extends BaseEntity implements UserDetails {
      *
      * @return 用户权限集合
      */
+    @Transient
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //权限集合(在Security中，角色和权限共用GrantedAuthority接口，唯一的不同角色就是多了个前缀"ROLE_"，
+        //权限集合(在Security中，角色和权限共用GrantedAuthority接口，唯一的不同角色就是多了个前缀"ROLE_"[严格区分大小写]，
         // 而且它没有Shiro的那种从属关系，即一个角色包含哪些权限等等。
         // 在Security看来角色和权限时一样的，它认证的时候，把所有权限（角色、权限）都取出来，而不是分开验证。)
-        List<GrantedAuthority> auths = new ArrayList<>();
+        List<GrantedAuthority> authorities = new ArrayList<>();
         //用户角色
         for (Role role : getRoleSet()) {
-            auths.add(new SimpleGrantedAuthority(WebKeys.ROLE_PREFIX + role.getKey()));
+            authorities.add(new SimpleGrantedAuthority(WebKeys.ROLE_PREFIX + role.getKey()));
             //获取用户的菜单权限
             for (Menu menu : role.getMenuSet()) {
                 if (!StrUtil.isBlank(menu.getPermission())) {
-                    auths.add(new SimpleGrantedAuthority(menu.getPermission()));
+                    authorities.add(new SimpleGrantedAuthority(menu.getPermission()));
                 }
             }
         }
-        return auths;
+        return authorities;
     }
+
 
     /**
      * 账户是否未过期
