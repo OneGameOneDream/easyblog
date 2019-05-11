@@ -1,5 +1,7 @@
 package com.ggiit.easyblog.framework.jwt;
 
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
 import com.ggiit.easyblog.project.system.user.entity.User;
@@ -7,16 +9,20 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.*;
 
 /**
  * JWT工具类
  */
+@Component
 public class JwtUtils {
     /**
      * 刷新Token的角色
@@ -118,12 +124,12 @@ public class JwtUtils {
             //获取用户最后登陆ip
             String loginIp = (String) claims.get(CLAIM_KEY_LOGIN_IP);
             //获取用户最后登陆时间
-            Date loginDate = (Date) claims.get(CLAIM_KEY_LOGIN_DATE);
+            Date loginDate = DateUtil.date((Long)claims.get(CLAIM_KEY_LOGIN_DATE));
             //获取用户描述
             String remark = (String) claims.get(CLAIM_KEY_REMARK);
             //获取权限字符串集合
-            List auths = (List) claims.get(CLAIM_KEY_AUTHORITIES);
-            //权限集合
+            List<?> auths = (List<?>) claims.get(CLAIM_KEY_AUTHORITIES);
+            //权限集合+
             Collection<? extends GrantedAuthority> authorities = parseArrayToAuthorities(auths);
             user = new JwtUser();
             //给user赋值
@@ -154,7 +160,7 @@ public class JwtUtils {
         Claims claims;
         try {
             claims = Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey(generalKey())
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
@@ -319,8 +325,10 @@ public class JwtUtils {
         return generateAccessToken(user.getUsername(), claims);
     }
 
+
+
     /**
-     * 根据sub主要信息和负载生成Token
+     * 根据sub主要信息和负载生成刷新Token
      *
      * @param subject 主要信息
      * @param claims  负载
@@ -361,6 +369,27 @@ public class JwtUtils {
     }
 
     /**
+     * 由字符串生成加密key
+     * @return
+     */
+    public  SecretKey generalKey() {
+        try {
+            // 一般服务端自定义一个KEY值，转换成byte[] 再转成SecretKey
+            String stringKey = "UnWhVr6cKjw5gzwnR6j5FjYpox6kRoyHbvaTwcfexb11QrKrvVeoGGP3YD3cxlKvyJL6lrK0XX0oMGcA5nPIq7ucGeUFFZ7sIuR";
+            byte[] encodedKey = Base64.decode(stringKey);
+            SecretKey key = Keys.hmacShaKeyFor(encodedKey);
+
+            //如果嫌麻烦，可以直接使用jjwt 提供key算法
+//            SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256); //or HS384 or HS512
+            return key;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * 根据sub主要信息和负载及过期时间生成Token
      *
      * @param subject    主要信息
@@ -370,15 +399,22 @@ public class JwtUtils {
      */
     private String generateToken(String subject, Map<String, Object> claims, long expiration) {
         return Jwts.builder()
+                // 自定义属性
                 .setClaims(claims)
+                // 主题
                 .setSubject(subject)
+                // JWT_ID
                 .setId(UUID.randomUUID().toString())
+                // 签发时间
                 .setIssuedAt(new Date())
+                // 过期时间
                 .setExpiration(generateExpirationDate(expiration))
+                //body压缩
                 .compressWith(CompressionCodecs.DEFLATE)
-                .signWith(SIGNATURE_ALGORITHM, secret)
+                .signWith(generalKey())
                 .compact();
     }
+
 
     /**
      * 验证Token是否有效

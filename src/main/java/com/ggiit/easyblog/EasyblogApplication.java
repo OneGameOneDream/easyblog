@@ -22,6 +22,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @PropertySource("classpath:application-redis.properties")
 @PropertySource("classpath:application-security.properties")
 @PropertySource("classpath:application-log.properties")
+@PropertySource("classpath:application-jwt.properties")
 public class EasyblogApplication {
 
     public static void main(String[] args) {
