@@ -4,6 +4,9 @@ package com.ggiit.easyblog.project.system.user.service;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 
 /**
  * 用户业务层接口
@@ -63,5 +66,13 @@ public interface UserService {
      * @return 受影响行数
      */
     Long deleteUsersByIdIn(String ids);
+
+    /**
+     * 根据用户对象查询用户权限
+     *
+     * @param user 用户对象
+     * @return 权限集合
+     */
+    Collection<GrantedAuthority> findAuthorities(User user);
 
 }

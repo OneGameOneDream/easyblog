@@ -65,7 +65,11 @@ public enum ResponseCode {
     /**
      * 用户名不存在
      */
-    USER_NOT_FOUND(17004, "用户名不存在");
+    USER_NOT_FOUND(17004, "用户名不存在"),
+    /**
+     * 用户名不存在
+     */
+    INIT_JWT_USER_ERROR(17004, "初始化JwtUser失败");
 
 
     private int code;

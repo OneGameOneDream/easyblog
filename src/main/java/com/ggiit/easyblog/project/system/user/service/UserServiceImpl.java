@@ -1,18 +1,26 @@
 package com.ggiit.easyblog.project.system.user.service;
 
 import cn.hutool.core.util.StrUtil;
+import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.common.exception.EmailExistException;
 import com.ggiit.easyblog.common.exception.UsernameExistException;
+import com.ggiit.easyblog.project.system.menu.entity.Menu;
+import com.ggiit.easyblog.project.system.role.entity.Role;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.query.UserQuery;
 import com.ggiit.easyblog.project.system.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 用戶业务层实现
@@ -159,4 +167,29 @@ public class UserServiceImpl implements UserService {
     public Long deleteUsersByIdIn(String ids) {
         return userRepository.deleteUsersByIdIn(Arrays.asList(ids.split(",")));
     }
+
+    /**
+     * 根据用户对象查询用户权限
+     *
+     * @param user 用户对象
+     * @return 权限集合
+     */
+    public Collection<GrantedAuthority> findAuthorities(User user) {
+        //权限集合(在Security中，角色和权限共用GrantedAuthority接口，唯一的不同角色就是多了个前缀"ROLE_"[严格区分大小写]，
+        // 而且它没有Shiro的那种从属关系，即一个角色包含哪些权限等等。
+        // 在Security看来角色和权限时一样的，它认证的时候，把所有权限（角色、权限）都取出来，而不是分开验证。)
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        //用户角色
+        for (Role role : user.getRoleSet()) {
+            authorities.add(new SimpleGrantedAuthority(WebKeys.ROLE_PREFIX + role.getKey()));
+            //获取用户的菜单权限
+            for (Menu menu : role.getMenuSet()) {
+                if (!StrUtil.isBlank(menu.getPermission())) {
+                    authorities.add(new SimpleGrantedAuthority(menu.getPermission()));
+                }
+            }
+        }
+        return authorities;
+    }
+
 }

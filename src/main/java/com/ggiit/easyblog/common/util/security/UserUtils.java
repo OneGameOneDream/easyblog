@@ -2,6 +2,7 @@ package com.ggiit.easyblog.common.util.security;
 
 
 import com.ggiit.easyblog.common.constant.WebKeys;
+import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -16,10 +17,10 @@ public class UserUtils {
     /**
      * 获取当前用户对象
      */
-    public static User getUser() {
-        User user = new User();
+    public static JwtUser getUser() {
+        JwtUser user = new JwtUser();
         try {
-            user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            user = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (Exception e) {
             //如果未登录，将其昵称设置为匿名用户
             user.setNickname(WebKeys.ANONYMOUS_USER);

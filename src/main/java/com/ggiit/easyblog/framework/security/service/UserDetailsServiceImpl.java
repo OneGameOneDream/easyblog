@@ -1,10 +1,17 @@
 package com.ggiit.easyblog.framework.security.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.annotation.Log;
+import com.ggiit.easyblog.common.constant.WebKeys;
+import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
+import com.ggiit.easyblog.project.system.menu.entity.Menu;
+import com.ggiit.easyblog.project.system.role.entity.Role;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.repository.UserRepository;
 import com.ggiit.easyblog.project.system.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,7 +20,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 安全服务业务层
@@ -51,13 +60,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(String.format("没有该用户 '%s'.", username));
         } else {
-            //登陆拦截，记录登陆信息
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            user.setLoginIp(request.getRemoteAddr());
-            user.setLoginDate(new Date());
-            userService.update(user);
             //这里返回上面继承了 UserDetails  接口的用户类
-            return user;
+            return createJwtUser(user);
         }
     }
+
+    /**
+     * 创建JwtUser对象
+     *
+     * @param user
+     * @return
+     */
+    private UserDetails createJwtUser(User user) {
+        JwtUser jwtUser = new JwtUser(user.getUsername(), user.getNickname(), user.getPassword(), user.getAvatar(), user.getEmail(), user.getState(), user.getPhone(), user.getLoginIp(), user.getLoginDate(), userService.findAuthorities(user));
+        jwtUser.setId(user.getId());
+        jwtUser.setCreateBy(user.getCreateBy());
+        jwtUser.setCreateTime(user.getCreateTime());
+        jwtUser.setUpdateBy(user.getUpdateBy());
+        jwtUser.setUpdateTime(user.getUpdateTime());
+        jwtUser.setRemark(user.getRemark());
+        jwtUser.setDelFlag(user.getDelFlag());
+        return jwtUser;
+    }
+
+
 }

@@ -3,6 +3,7 @@ package com.ggiit.easyblog.framework.jwt;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
+import com.ggiit.easyblog.common.exception.InitJwtUserException;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import io.jsonwebtoken.Claims;
@@ -74,6 +75,27 @@ public class JwtUtils {
      */
     private static final String CLAIM_KEY_AUTHORITIES = "authorities";
 
+    /**
+     * 创建者
+     */
+    private static final String CLAIM_CREATE_BY = "createBy";
+    /**
+     * 创建时间
+     */
+    private static final String CLAIM_CREATE_TIME = "createTime";
+    /**
+     * 修改者
+     */
+    private static final String CLAIM_UPDATE_BY = "updateBy";
+    /**
+     * 修改时间
+     */
+    private static final String CLAIM_UPDATE_TIME = "updateTime";
+    /**
+     * 删除标识
+     */
+    private static final String CLAIM_DEL_FLAG = "delFlag";
+
 
     /**
      * 密匙key
@@ -101,7 +123,7 @@ public class JwtUtils {
      * @param token token
      * @return 用户对象
      */
-    public User getUserFromToken(String token) {
+    public JwtUser getUserFromToken(String token) {
         //用户对象
         JwtUser user;
         try {
@@ -124,13 +146,23 @@ public class JwtUtils {
             //获取用户最后登陆ip
             String loginIp = (String) claims.get(CLAIM_KEY_LOGIN_IP);
             //获取用户最后登陆时间
-            Date loginDate = DateUtil.date((Long)claims.get(CLAIM_KEY_LOGIN_DATE));
+            Date loginDate = DateUtil.date((Long) claims.get(CLAIM_KEY_LOGIN_DATE));
             //获取用户描述
             String remark = (String) claims.get(CLAIM_KEY_REMARK);
             //获取权限字符串集合
-            List<?> auths = (List<?>) claims.get(CLAIM_KEY_AUTHORITIES);
+            List auths = (List) claims.get(CLAIM_KEY_AUTHORITIES);
             //权限集合+
             Collection<? extends GrantedAuthority> authorities = parseArrayToAuthorities(auths);
+            //创建者
+            String createBy = (String) claims.get(CLAIM_CREATE_BY);
+            //创建时间
+            Date createTime = DateUtil.date((Long) claims.get(CLAIM_CREATE_TIME));
+            //修改者
+            String updateBy = (String) claims.get(CLAIM_UPDATE_BY);
+            //修改时间
+            Date updateTime = DateUtil.date((Long) claims.get(CLAIM_UPDATE_TIME));
+            //删除标识
+            boolean delFlag = (boolean) claims.get(CLAIM_DEL_FLAG);
             user = new JwtUser();
             //给user赋值
             user.setId(userId);
@@ -144,8 +176,13 @@ public class JwtUtils {
             user.setLoginDate(loginDate);
             user.setRemark(remark);
             user.setAuthorities(authorities);
+            user.setCreateBy(createBy);
+            user.setCreateTime(createTime);
+            user.setUpdateBy(updateBy);
+            user.setUpdateTime(updateTime);
+            user.setDelFlag(delFlag);
         } catch (Exception e) {
-            user = null;
+            throw new InitJwtUserException();
         }
         return user;
     }
@@ -186,43 +223,11 @@ public class JwtUtils {
      * @return true/false
      */
     private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
+        final Claims claims = getClaimsFromToken(token);
+        Date expiration = claims.getExpiration();
         return expiration.before(new Date());
     }
 
-    /**
-     * 根据token 获取过期时间
-     *
-     * @param token
-     * @return
-     */
-    public Date getExpirationDateFromToken(String token) {
-        Date expiration;
-        try {
-            final Claims claims = getClaimsFromToken(token);
-            expiration = claims.getExpiration();
-        } catch (Exception e) {
-            expiration = null;
-        }
-        return expiration;
-    }
-
-    /**
-     * 根据token 获取生成时间
-     *
-     * @param token
-     * @return
-     */
-    public Date getCreatedDateFromToken(String token) {
-        Date created;
-        try {
-            final Claims claims = getClaimsFromToken(token);
-            created = claims.getIssuedAt();
-        } catch (Exception e) {
-            created = null;
-        }
-        return created;
-    }
 
     /**
      * 是否在上次密码重置之前创建
@@ -241,7 +246,7 @@ public class JwtUtils {
      * @param user 用户对象
      * @return 负载Map
      */
-    private Map<String, Object> generateClaims(User user) {
+    private Map<String, Object> generateClaims(JwtUser user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(CLAIM_KEY_USER_ID, user.getId());
         claims.put(CLAIM_KEY_USER_NAME, user.getUsername());
@@ -250,9 +255,14 @@ public class JwtUtils {
         claims.put(CLAIM_KEY_STATE, user.getState());
         claims.put(CLAIM_KEY_PHONE, user.getPhone());
         claims.put(CLAIM_KEY_LOGIN_IP, user.getLoginIp());
-        claims.put(CLAIM_KEY_LOGIN_DATE, user.getLoginDate());
+        claims.put(CLAIM_KEY_LOGIN_DATE, DateUtil.date(user.getLoginDate()));
         claims.put(CLAIM_KEY_REMARK, user.getRemark());
         claims.put(CLAIM_KEY_AUTHORITIES, authoritiesToArray(user.getAuthorities()));
+        claims.put(CLAIM_CREATE_BY, user.getCreateBy());
+        claims.put(CLAIM_CREATE_TIME, DateUtil.date(user.getCreateTime()));
+        claims.put(CLAIM_UPDATE_BY, user.getUpdateBy());
+        claims.put(CLAIM_UPDATE_TIME, DateUtil.date(user.getUpdateTime()));
+        claims.put(CLAIM_DEL_FLAG, user.getDelFlag());
         return claims;
     }
 
@@ -298,13 +308,13 @@ public class JwtUtils {
     }
 
     /**
-     * 根据用戶对象生成Token
+     * 根据用戶对象刷新Token
      *
      * @param userDetails 用戶對象
      * @return Token
      */
     public String generateRefreshToken(UserDetails userDetails) {
-        User user = (User) userDetails;
+        JwtUser user = (JwtUser) userDetails;
         Map<String, Object> claims = generateClaims(user);
         // 只授于更新 token 的权限
         String roles[] = new String[]{ROLE_REFRESH_TOKEN};
@@ -319,12 +329,10 @@ public class JwtUtils {
      * @return
      */
     public String generateAccessToken(UserDetails userDetails) {
-        User user = (User) userDetails;
+        JwtUser user = (JwtUser) userDetails;
         Map<String, Object> claims = generateClaims(user);
-        claims.put(CLAIM_KEY_AUTHORITIES, JSONUtil.toJsonStr(authoritiesToArray(user.getAuthorities())));
         return generateAccessToken(user.getUsername(), claims);
     }
-
 
 
     /**
@@ -346,7 +354,8 @@ public class JwtUtils {
      * @return true/false
      */
     public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
-        final Date created = getCreatedDateFromToken(token);
+        final Claims claims = getClaimsFromToken(token);
+        final Date created = claims.getIssuedAt();
         return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
                 && (!isTokenExpired(token));
     }
@@ -370,12 +379,14 @@ public class JwtUtils {
 
     /**
      * 由字符串生成加密key
+     *
      * @return
      */
-    public  SecretKey generalKey() {
+    public SecretKey generalKey() {
         try {
             // 一般服务端自定义一个KEY值，转换成byte[] 再转成SecretKey
-            String stringKey = "UnWhVr6cKjw5gzwnR6j5FjYpox6kRoyHbvaTwcfexb11QrKrvVeoGGP3YD3cxlKvyJL6lrK0XX0oMGcA5nPIq7ucGeUFFZ7sIuR";
+            String mySecretBase64 = Base64.decodeStr(secret);
+            String stringKey = "UnWhVr6cKjw5gzwnR6j5FjYpox6kRoyHbvaTwcfexb11QrKrvVeoGGP3YD3cxlKvyJL6lrK0XX0oMGcA5nPIq7ucGeUFFZ7sIuR" + mySecretBase64;
             byte[] encodedKey = Base64.decode(stringKey);
             SecretKey key = Keys.hmacShaKeyFor(encodedKey);
 
@@ -383,7 +394,7 @@ public class JwtUtils {
 //            SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256); //or HS384 or HS512
             return key;
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -410,7 +421,7 @@ public class JwtUtils {
                 // 过期时间
                 .setExpiration(generateExpirationDate(expiration))
                 //body压缩
-                .compressWith(CompressionCodecs.DEFLATE)
+                //.compressWith(CompressionCodecs.DEFLATE)
                 .signWith(generalKey())
                 .compact();
     }
@@ -429,8 +440,8 @@ public class JwtUtils {
         final Claims claims = getClaimsFromToken(token);
         final String userId = (String) claims.get(CLAIM_KEY_NICK_NAME);
         final String username = (String) claims.get(CLAIM_KEY_USER_NAME);
-        // final Date created = getCreatedDateFromToken(token);
-        // final Date expiration = getExpirationDateFromToken(token);
+        // final Date created =  claims.getIssuedAt();
+//         final Date expiration = claims.getExpiration();
         return (userId.equals(user.getId())
                 && username.equals(user.getUsername())
                 && !isTokenExpired(token)

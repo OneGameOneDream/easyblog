@@ -1,10 +1,7 @@
 package com.ggiit.easyblog.framework.web.exception;
 
 import com.ggiit.easyblog.common.constant.ResponseCode;
-import com.ggiit.easyblog.common.exception.EmailExistException;
-import com.ggiit.easyblog.common.exception.MenuNameExistException;
-import com.ggiit.easyblog.common.exception.RoleNameExistException;
-import com.ggiit.easyblog.common.exception.UsernameExistException;
+import com.ggiit.easyblog.common.exception.*;
 import com.ggiit.easyblog.framework.web.entity.ApiResult;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -69,6 +66,15 @@ public class GlobalExceptionHandler {
     public ApiResult accessDeniedException() {
         return ApiResult.error(ResponseCode.NO_PERMISSION);
     }
+
+    /**
+     * 初始化JwtUser失败
+     */
+    @ExceptionHandler(InitJwtUserException.class)
+    public ApiResult initJwtUserException() {
+        return ApiResult.error(ResponseCode.INIT_JWT_USER_ERROR);
+    }
+
 
     /**
      * 系统异常

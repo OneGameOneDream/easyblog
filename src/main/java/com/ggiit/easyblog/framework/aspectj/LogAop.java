@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.annotation.Log;
 import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.common.util.security.UserUtils;
+import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.repository.UserRepository;
 import io.jsonwebtoken.lang.Collections;
@@ -57,7 +58,7 @@ public class LogAop {
         Method method = signature.getMethod();
         Log syslog = method.getAnnotation(Log.class);
         //当前登陆用户
-        User user = UserUtils.getUser();
+        JwtUser user = UserUtils.getUser();
         //用户角色集合
         List<String> roleNameList = new ArrayList<>();
         //不是匿名用户，即取其角色
