@@ -1,30 +1,17 @@
 package com.ggiit.easyblog.framework.jwt.entity;
 
-import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
-import com.ggiit.easyblog.project.system.menu.entity.Menu;
-import com.ggiit.easyblog.project.system.role.entity.Role;
-import com.ggiit.easyblog.project.system.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 登录认证用户
@@ -83,37 +70,6 @@ public class JwtUser extends BaseEntity implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
 
-//****************************************************************************************************
-
-    /**
-     * 密码
-     *
-     * @return 密码
-     */
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * 用户名
-     *
-     * @return 用户名
-     */
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * 获取用户权限集合
-     *
-     * @return 用户权限集合
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
 
 
     /**

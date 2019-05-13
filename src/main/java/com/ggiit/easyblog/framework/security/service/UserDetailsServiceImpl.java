@@ -1,28 +1,15 @@
 package com.ggiit.easyblog.framework.security.service;
 
-import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.annotation.Log;
-import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
-import com.ggiit.easyblog.project.system.menu.entity.Menu;
-import com.ggiit.easyblog.project.system.role.entity.Role;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.repository.UserRepository;
 import com.ggiit.easyblog.project.system.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 安全服务业务层
@@ -68,8 +55,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     /**
      * 创建JwtUser对象
      *
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return SpringSecurity安全用户
      */
     private UserDetails createJwtUser(User user) {
         JwtUser jwtUser = new JwtUser(user.getUsername(), user.getNickname(), user.getPassword(), user.getAvatar(), user.getEmail(), user.getState(), user.getPhone(), user.getLoginIp(), user.getLoginDate(), userService.findAuthorities(user));

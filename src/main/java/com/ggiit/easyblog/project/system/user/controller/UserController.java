@@ -6,7 +6,6 @@ import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -27,6 +26,12 @@ public class UserController {
     private UserService userService;
 
 
+    @Log("查询用户数据")
+    @GetMapping("users/{id}")
+    public ApiResult user(@PathVariable String id) {
+        return ApiResult.success(userService.get(id));
+    }
+
     /**
      * 用户分页数据
      *
@@ -34,9 +39,8 @@ public class UserController {
      * @param pageSize 页大小
      * @return 分页数据
      */
-    @Log("查询用户数据")
+    @Log("查询用户分页数据")
     @GetMapping("users")
-    @PreAuthorize("hasRole('admin')")
     public ApiResult page(User user, @RequestParam(name = "pageNum", defaultValue = "0") Integer pageNum,
                           @RequestParam(name = "pageSize", defaultValue = "5") Integer pageSize) {
         return ApiResult.success(userService.findPage(user, PageRequest.of(pageNum, pageSize)));
@@ -87,7 +91,7 @@ public class UserController {
      */
     @Log("批量删除用户数据")
     @DeleteMapping("users/{ids}")
-    public ApiResult deleterolesByIdIn(@PathVariable("ids") String ids) {
+    public ApiResult deleteUsersByIdIn(@PathVariable("ids") String ids) {
         return ApiResult.success(userService.deleteUsersByIdIn(ids));
     }
 

@@ -48,7 +48,7 @@ public class Role extends BaseEntity {
      * 角色拥有用户集合
      */
     @JsonIgnore
-    @ManyToMany(mappedBy = "roleSet", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "roleSet")
     private Set<User> userSet;
 
     /**

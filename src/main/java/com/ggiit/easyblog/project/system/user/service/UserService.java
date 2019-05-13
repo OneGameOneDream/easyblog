@@ -2,6 +2,8 @@ package com.ggiit.easyblog.project.system.user.service;
 
 
 import com.ggiit.easyblog.project.system.user.entity.User;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +16,7 @@ import java.util.Collection;
  * @author gao
  * @date 2019.4.23
  */
+@CacheConfig(cacheNames = "user")
 public interface UserService {
 
     /**
@@ -22,6 +25,7 @@ public interface UserService {
      * @param id 用户编号
      * @return User 用户对象
      */
+    @Cacheable(key = "#p0")
     User get(String id);
 
 

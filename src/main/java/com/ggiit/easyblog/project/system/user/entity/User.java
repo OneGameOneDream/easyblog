@@ -1,22 +1,16 @@
 package com.ggiit.easyblog.project.system.user.entity;
 
-import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
-import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.role.entity.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Date;
+import java.util.Set;
 
 /**
  * 用户实体类
@@ -30,6 +24,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 public class User extends BaseEntity {
+
     /**
      * 用户名
      */

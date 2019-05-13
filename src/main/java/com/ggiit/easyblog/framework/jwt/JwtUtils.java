@@ -7,9 +7,7 @@ import com.ggiit.easyblog.common.exception.InitJwtUserException;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -107,18 +105,9 @@ public class JwtUtils {
      */
     @Value("${jwt.expiration}")
     private Long expiration;
-    /**
-     * 刷新token时间
-     */
-    @Value("${jwt.refresh_token}")
-    private Long refresh_token;
-    /**
-     * 签名算法
-     */
-    private final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
 
     /**
-     * 通过Token获取用户
+     * 解析Token获取用户
      *
      * @param token token
      * @return 用户对象
