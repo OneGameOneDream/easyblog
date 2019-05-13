@@ -13,8 +13,10 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * Redis配置类
@@ -33,10 +35,19 @@ public class RedisConfig extends CachingConfigurerSupport {
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(factory);
 
         Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer(Object.class);
+//
+//        RedisSerializationContext.SerializationPair pair = RedisSerializationContext.SerializationPair.fromSerializer(serializer);
 
-        RedisSerializationContext.SerializationPair pair = RedisSerializationContext.SerializationPair.fromSerializer(serializer);
-
-        RedisCacheConfiguration defaultCacheConfig=RedisCacheConfiguration.defaultCacheConfig().serializeValuesWith(pair);
+        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration
+                .defaultCacheConfig()
+                .serializeKeysWith(
+                        RedisSerializationContext
+                                .SerializationPair
+                                .fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(
+                        RedisSerializationContext
+                                .SerializationPair
+                                .fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
         return new RedisCacheManager(redisCacheWriter, defaultCacheConfig);
     }
@@ -44,6 +55,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 
     /**
      * 自定义缓存key生成策略
+     *
      * @return
      */
     @Bean
