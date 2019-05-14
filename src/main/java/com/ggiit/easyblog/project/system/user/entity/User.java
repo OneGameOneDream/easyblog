@@ -7,6 +7,7 @@ import com.ggiit.easyblog.project.system.role.entity.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@Proxy(lazy = false)
 public class User extends BaseEntity {
 
     /**
@@ -77,12 +79,10 @@ public class User extends BaseEntity {
     /**
      * 角色集合
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "T_SYS_USER_ROlE",
             joinColumns = {@JoinColumn(name = "USER_ID_", referencedColumnName = "ID_")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID_", referencedColumnName = "ID_")})
     private Set<Role> roleSet;
-
-
 }

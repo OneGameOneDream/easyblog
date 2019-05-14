@@ -2,6 +2,8 @@ package com.ggiit.easyblog.project.system.menu.service;
 
 
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
  * @author gao
  * @date 2019.5.9
  */
+@CacheConfig(cacheNames = "menu")
 public interface MenuService {
     /**
      * 通过id查询菜单
@@ -18,6 +21,7 @@ public interface MenuService {
      * @param id 菜单编号
      * @return Menu 菜单对象
      */
+    @Cacheable(key = "#p0")
     Menu get(String id);
 
 

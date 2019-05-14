@@ -30,6 +30,7 @@ import java.util.List;
  * @date 2019.4.23
  */
 @Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
     /**
@@ -52,7 +53,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User get(String id) {
-        return userRepository.getOne(id);
+        User user = new User();
+        user.setId(id);
+        return  userRepository.findOne(userQuery.getListSpecification(user)).get();
+        //return userRepository.getOne(id);
     }
 
 

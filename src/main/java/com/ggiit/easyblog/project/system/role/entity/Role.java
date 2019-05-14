@@ -8,6 +8,7 @@ import com.ggiit.easyblog.project.system.user.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -23,6 +24,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@Proxy(lazy = false)
 public class Role extends BaseEntity {
     /**
      * 角色名称
@@ -54,7 +56,7 @@ public class Role extends BaseEntity {
     /**
      * 菜单权限集合
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "T_SYS_ROLE_MENU",
             joinColumns = {@JoinColumn(name = "ROLE_ID_", referencedColumnName = "ID_")},

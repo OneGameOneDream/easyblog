@@ -79,10 +79,10 @@ public class GlobalExceptionHandler {
     /**
      * 系统异常
      */
-    @ExceptionHandler(Exception.class)
-
-    public ApiResult handleException() {
-        return ApiResult.error(ResponseCode.SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//
+//    public ApiResult handleException() {
+//        return ApiResult.error(ResponseCode.SERVER_ERROR);
+//    }
 
 }

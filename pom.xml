@@ -12,7 +12,6 @@
     <artifactId>easyblog</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>easyblog</name>
-
     <properties>
         <java.version>1.8</java.version>
         <jjwt.version>0.10.5</jjwt.version>
@@ -42,7 +41,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--Redis依赖-->
+        <!-- redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -51,11 +50,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
-        </dependency>
-        <!-- spring cache -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
         <!--MySql驱动-->
         <dependency>

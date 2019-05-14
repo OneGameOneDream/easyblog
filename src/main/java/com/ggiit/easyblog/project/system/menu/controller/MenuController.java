@@ -24,6 +24,17 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
+    /**
+     * 查询菜单数据
+     *
+     * @param id 菜单编号
+     * @return 菜单数据
+     */
+    @Log("查询菜单数据")
+    @GetMapping("menus/{id}")
+    public ApiResult menu(@PathVariable String id) {
+        return ApiResult.success(menuService.get(id));
+    }
 
     /**
      * 菜单分页数据

@@ -6,6 +6,7 @@ import com.ggiit.easyblog.project.system.role.entity.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@Proxy(lazy = false)
 public class Menu extends BaseEntity {
     /**
      * 菜单名称

@@ -25,11 +25,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
+    /**
+     * 查询用户数据
+     *
+     * @param id 用户编号
+     * @return 用户数据
+     */
     @Log("查询用户数据")
     @GetMapping("users/{id}")
-    public ApiResult user(@PathVariable String id) {
-        return ApiResult.success(userService.get(id));
+    public User user(@PathVariable String id) {
+        return userService.get(id);
     }
 
     /**

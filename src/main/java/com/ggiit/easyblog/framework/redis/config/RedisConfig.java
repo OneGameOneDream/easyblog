@@ -1,5 +1,9 @@
 package com.ggiit.easyblog.framework.redis.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -13,7 +17,6 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -29,15 +32,29 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 public class RedisConfig extends CachingConfigurerSupport {
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        //补上
+        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        return om;
+    }
+
+    /**
+     * 缓存配置管理器
+     * @param factory
+     * @return
+     */
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory factory) {
+
         //初始化一个RedisCacheWriter
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(factory);
-
         Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer(Object.class);
-//
-//        RedisSerializationContext.SerializationPair pair = RedisSerializationContext.SerializationPair.fromSerializer(serializer);
-
+        serializer.setObjectMapper(objectMapper());
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration
                 .defaultCacheConfig()
                 .serializeKeysWith(
@@ -47,10 +64,10 @@ public class RedisConfig extends CachingConfigurerSupport {
                 .serializeValuesWith(
                         RedisSerializationContext
                                 .SerializationPair
-                                .fromSerializer(new GenericJackson2JsonRedisSerializer()));
-
+                                .fromSerializer(serializer));
         return new RedisCacheManager(redisCacheWriter, defaultCacheConfig);
     }
+
 
 
     /**
@@ -69,6 +86,7 @@ public class RedisConfig extends CachingConfigurerSupport {
                 // 由于参数可能不同, hashCode肯定不一样, 缓存的key也需要不一样
                 sb.append(obj.toString());
             }
+            log.info("自动生成Redis Key -> [{}]", sb.toString());
             return sb.toString();
         };
     }
