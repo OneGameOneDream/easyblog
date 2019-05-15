@@ -2,10 +2,10 @@ package com.ggiit.easyblog.project.system.role.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.exception.RoleNameExistException;
+import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.role.entity.Role;
 import com.ggiit.easyblog.project.system.role.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,8 +47,8 @@ public class RoleServiceImpl implements RoleService {
      * @return Page 分页对象
      */
     @Override
-    public Page<Role> findPage(Role role, Pageable pageable) {
-        return roleRepository.findAll(pageable);
+    public Object findPage(Role role, Pageable pageable) {
+        return PageUtil.toPage(roleRepository.findAll(pageable));
     }
 
     /**
@@ -125,5 +125,14 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public Long deleteRolesByIdIn(String ids) {
         return roleRepository.deleteRolesByIdIn(Arrays.asList(ids.split(",")));
+    }
+
+    /**
+     * @param roleName 角色名
+     * @return role 角色对象
+     */
+    @Override
+    public Role findByName(String roleName) {
+        return roleRepository.findByName(roleName);
     }
 }

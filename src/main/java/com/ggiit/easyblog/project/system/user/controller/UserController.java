@@ -33,8 +33,8 @@ public class UserController {
      */
     @Log("查询用户数据")
     @GetMapping("users/{id}")
-    public User user(@PathVariable String id) {
-        return userService.get(id);
+    public ApiResult user(@PathVariable String id) {
+        return ApiResult.success(userService.get(id));
     }
 
     /**

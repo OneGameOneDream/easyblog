@@ -3,7 +3,6 @@ package com.ggiit.easyblog.framework.security.service;
 import com.ggiit.easyblog.common.annotation.Log;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
 import com.ggiit.easyblog.project.system.user.entity.User;
-import com.ggiit.easyblog.project.system.user.repository.UserRepository;
 import com.ggiit.easyblog.project.system.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,11 +24,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Autowired
     private UserService userService;
-    /**
-     * 用户持久层
-     */
-    @Autowired
-    private UserRepository userRepository;
 
 
     /**
@@ -43,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //根据用户名查找用户
-        User user = userRepository.findByUsername(username);
+        User user = userService.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("没有该用户 '%s'.", username));
         } else {

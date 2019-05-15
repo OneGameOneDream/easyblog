@@ -1,9 +1,7 @@
 package com.ggiit.easyblog.framework.web.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Proxy;
 import org.springframework.data.annotation.CreatedBy;

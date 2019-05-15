@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.user.entity.User;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
@@ -56,6 +54,7 @@ public class Role extends BaseEntity {
     /**
      * 菜单权限集合
      */
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "T_SYS_ROLE_MENU",

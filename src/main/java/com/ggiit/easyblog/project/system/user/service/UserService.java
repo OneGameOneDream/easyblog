@@ -3,8 +3,8 @@ package com.ggiit.easyblog.project.system.user.service;
 
 import com.ggiit.easyblog.project.system.user.entity.User;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -25,7 +25,7 @@ public interface UserService {
      * @param id 用户编号
      * @return User 用户对象
      */
-    @Cacheable(key = "#p0")
+    @Cacheable(key = "'user_'+#p0")
     User get(String id);
 
 
@@ -36,7 +36,8 @@ public interface UserService {
      * @param pageable 分页配置
      * @return Page 分页对象
      */
-    Page<User> findPage(User user, Pageable pageable);
+    @Cacheable(keyGenerator = "keyGenerator")
+    Object findPage(User user, Pageable pageable);
 
     /**
      * 更新用户信息
@@ -44,6 +45,7 @@ public interface UserService {
      * @param user 用户对象
      * @return User 更新后的用户对象
      */
+    @CacheEvict(allEntries = true)
     User update(User user);
 
     /**
@@ -52,6 +54,7 @@ public interface UserService {
      * @param user 用户对象
      * @return User 新增后的用户
      */
+    @CacheEvict(allEntries = true)
     User insert(User user);
 
     /**
@@ -60,6 +63,7 @@ public interface UserService {
      * @param id 用户编号
      * @return 受影响行数
      */
+    @CacheEvict(allEntries = true)
     Long deleteUserById(String id);
 
 
@@ -69,6 +73,7 @@ public interface UserService {
      * @param ids 多个用户编号（用_隔开）
      * @return 受影响行数
      */
+    @CacheEvict(allEntries = true)
     Long deleteUsersByIdIn(String ids);
 
     /**
@@ -78,5 +83,24 @@ public interface UserService {
      * @return 权限集合
      */
     Collection<GrantedAuthority> findAuthorities(User user);
+
+    /**
+     * 根据邮箱查询用户
+     *
+     * @param email 邮箱
+     * @return user 用户对象
+     */
+    @Cacheable(key = "'findByEmail_'+#p0")
+    User findByEmail(String email);
+
+
+    /**
+     * 根据用户名查询用户
+     *
+     * @param username 用户名
+     * @return user 用户对象
+     */
+    @Cacheable(key = "'findByUsername_'+#p0")
+    User findByUsername(String username);
 
 }

@@ -3,8 +3,8 @@ package com.ggiit.easyblog.project.system.menu.service;
 
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -21,7 +21,7 @@ public interface MenuService {
      * @param id 菜单编号
      * @return Menu 菜单对象
      */
-    @Cacheable(key = "#p0")
+    @Cacheable(key = "'menu_'+#p0")
     Menu get(String id);
 
 
@@ -32,7 +32,8 @@ public interface MenuService {
      * @param pageable 分页配置
      * @return Page 分页对象
      */
-    Page<Menu> findPage(Menu menu, Pageable pageable);
+    @Cacheable(keyGenerator = "keyGenerator")
+    Object findPage(Menu menu, Pageable pageable);
 
     /**
      * 更新菜单信息
@@ -40,6 +41,7 @@ public interface MenuService {
      * @param menu 菜单对象
      * @return Menu 更新后的菜单对象
      */
+    @CacheEvict(allEntries = true)
     Menu update(Menu menu);
 
     /**
@@ -48,6 +50,16 @@ public interface MenuService {
      * @param menu 菜单对象
      * @return Menu 新增后的菜单
      */
+    @CacheEvict(allEntries = true)
     Menu insert(Menu menu);
+
+    /**
+     * 根据菜单名查询菜单
+     *
+     * @param menuName 菜单名
+     * @return Menu 菜单对象
+     */
+    @Cacheable(key = "'findByName_'+#p0")
+    Menu findByName(String menuName);
 
 }

@@ -3,9 +3,7 @@ package com.ggiit.easyblog.project.system.menu.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
 import com.ggiit.easyblog.project.system.role.entity.Role;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Column;

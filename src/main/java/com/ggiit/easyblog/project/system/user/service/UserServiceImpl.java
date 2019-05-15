@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.constant.WebKeys;
 import com.ggiit.easyblog.common.exception.EmailExistException;
 import com.ggiit.easyblog.common.exception.UsernameExistException;
+import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.role.entity.Role;
 import com.ggiit.easyblog.project.system.user.entity.User;
@@ -18,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * 用戶业务层实现
@@ -53,10 +51,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User get(String id) {
-        User user = new User();
-        user.setId(id);
-        return  userRepository.findOne(userQuery.getListSpecification(user)).get();
-        //return userRepository.getOne(id);
+        return userRepository.getOne(id);
     }
 
 
@@ -67,8 +62,9 @@ public class UserServiceImpl implements UserService {
      * @return Page 分页对象
      */
     @Override
-    public Page<User> findPage(User user, Pageable pageable) {
-        return userRepository.findAll(userQuery.getListSpecification(user), pageable);
+    public Object findPage(User user, Pageable pageable) {
+        Page<User> page = userRepository.findAll(userQuery.getListSpecification(user), pageable);
+        return PageUtil.toPage(page);
     }
 
     /**
@@ -197,5 +193,29 @@ public class UserServiceImpl implements UserService {
         }
         return authorities;
     }
+
+    /**
+     * 根据邮箱查询用户
+     *
+     * @param email 邮箱
+     * @return user 用户对象
+     */
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+
+    /**
+     * 根据用户名查询用户
+     *
+     * @param username 用户名
+     * @return user 用户对象
+     */
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 
 }

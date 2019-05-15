@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
 import com.ggiit.easyblog.project.system.role.entity.Role;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
@@ -79,10 +77,12 @@ public class User extends BaseEntity {
     /**
      * 角色集合
      */
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "T_SYS_USER_ROlE",
             joinColumns = {@JoinColumn(name = "USER_ID_", referencedColumnName = "ID_")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID_", referencedColumnName = "ID_")})
     private Set<Role> roleSet;
+
 }

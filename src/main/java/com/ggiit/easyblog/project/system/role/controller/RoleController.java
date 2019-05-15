@@ -25,13 +25,25 @@ public class RoleController {
     private RoleService roleService;
 
     /**
+     * 查询菜单数据
+     *
+     * @param id 菜单编号
+     * @return 菜单数据
+     */
+    @Log("查询角色数据")
+    @GetMapping("roles/{id}")
+    public ApiResult menu(@PathVariable String id) {
+        return ApiResult.success(roleService.get(id));
+    }
+
+    /**
      * 角色分页数据
      *
      * @param pageNum  页码
      * @param pageSize 页大小
      * @return 分页数据
      */
-    @Log("查询角色数据")
+    @Log("查询角色分页数据")
     @GetMapping("roles")
     public ApiResult page(Role role, @RequestParam(name = "pageNum", defaultValue = "0") Integer pageNum,
                           @RequestParam(name = "pageSize", defaultValue = "5") Integer pageSize) {

@@ -2,10 +2,10 @@ package com.ggiit.easyblog.project.system.menu.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.exception.MenuNameExistException;
+import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.menu.repository.MenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +45,8 @@ public class MenuServiceImpl implements MenuService {
      * @return Page 分页对象
      */
     @Override
-    public Page<Menu> findPage(Menu menu, Pageable pageable) {
-        return menuRepository.findAll(pageable);
+    public Object findPage(Menu menu, Pageable pageable) {
+        return PageUtil.toPage(menuRepository.findAll(pageable));
     }
 
     /**
@@ -115,5 +115,16 @@ public class MenuServiceImpl implements MenuService {
             throw new MenuNameExistException();
         }
         return menuRepository.save(menu);
+    }
+
+    /**
+     * 根据菜单名查询菜单
+     *
+     * @param menuName 菜单名
+     * @return Menu 菜单对象
+     */
+    @Override
+    public Menu findByName(String menuName) {
+        return menuRepository.findByName(menuName);
     }
 }

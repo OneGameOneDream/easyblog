@@ -1,5 +1,6 @@
 package com.ggiit.easyblog.framework.redis.config;
 
+import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,6 +66,7 @@ public class RedisConfig extends CachingConfigurerSupport {
                         RedisSerializationContext
                                 .SerializationPair
                                 .fromSerializer(serializer));
+        log.info("自定义RedisCacheManager加载完成");
         return new RedisCacheManager(redisCacheWriter, defaultCacheConfig);
     }
 
@@ -80,11 +82,11 @@ public class RedisConfig extends CachingConfigurerSupport {
     public KeyGenerator keyGenerator() {
         return (target, method, params) -> {
             StringBuilder sb = new StringBuilder();
-            sb.append(target.getClass().getName());
-            sb.append(method.getName());
+            sb.append(target.getClass().getName()+".");
+            sb.append(method.getName()+"?");
             for (Object obj : params) {
                 // 由于参数可能不同, hashCode肯定不一样, 缓存的key也需要不一样
-                sb.append(obj.toString());
+                sb.append(JSONUtil.toJsonStr(obj).hashCode());
             }
             log.info("自动生成Redis Key -> [{}]", sb.toString());
             return sb.toString();
