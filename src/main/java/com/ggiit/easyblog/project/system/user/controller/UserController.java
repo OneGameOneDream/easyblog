@@ -6,6 +6,7 @@ import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -33,6 +34,7 @@ public class UserController {
      */
     @Log("查询用户数据")
     @GetMapping("users/{id}")
+    @PreAuthorize("hasAnyRole('admin')")
     public ApiResult user(@PathVariable String id) {
         return ApiResult.success(userService.get(id));
     }

@@ -1,16 +1,14 @@
-package com.ggiit.easyblog.project.system.login.controller;
+package com.ggiit.easyblog.project.system.auth.controller;
 
 import com.ggiit.easyblog.common.annotation.Log;
 import com.ggiit.easyblog.common.util.security.UserUtils;
 import com.ggiit.easyblog.framework.jwt.JwtUtils;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
 import com.ggiit.easyblog.framework.web.entity.ApiResult;
-import com.ggiit.easyblog.project.system.user.entity.User;
-import com.ggiit.easyblog.project.system.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -21,10 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("auth")
-public class AuthenticationController {
-
-    @Autowired
-    private UserRepository userRepository;
+public class AuthController {
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -47,8 +42,8 @@ public class AuthenticationController {
      * 解析Token
      */
     @Log("解析token")
-    @GetMapping(value = "convert")
-    public ApiResult convert(@RequestParam String token) {
+    @GetMapping("/{token}")
+    public ApiResult convert(@PathVariable String token) {
         JwtUser user = jwtUtils.getUserFromToken(token);
         // 返回 token
         return ApiResult.success(user);
