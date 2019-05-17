@@ -6,6 +6,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * 角色业务层接口
  *
@@ -23,6 +25,13 @@ public interface RoleService {
     @Cacheable(key = "'role_'+#p0")
     Role get(String id);
 
+    /**
+     * 查询所有角色
+     *
+     * @return 角色集合
+     */
+    @Cacheable(key = "'roles'")
+    List<Role> findList();
 
     /**
      * 查询分页数据

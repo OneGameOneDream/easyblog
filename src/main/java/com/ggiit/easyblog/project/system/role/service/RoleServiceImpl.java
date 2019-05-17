@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 角色业务层实现
@@ -39,6 +40,15 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.getOne(id);
     }
 
+    /**
+     * 查询所有角色
+     *
+     * @return 角色集合
+     */
+    @Override
+    public List<Role> findList() {
+        return roleRepository.findAll();
+    }
 
     /**
      * 查询分页数据

@@ -7,6 +7,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * 菜单业务层接口
  *
@@ -23,6 +25,14 @@ public interface MenuService {
      */
     @Cacheable(key = "'menu_'+#p0")
     Menu get(String id);
+
+    /**
+     * 查询所有菜单
+     *
+     * @return 菜单集合
+     */
+    @Cacheable(key = "'menus'")
+    List<Menu> findList();
 
 
     /**
