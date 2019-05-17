@@ -5,10 +5,13 @@ import com.ggiit.easyblog.common.exception.MenuNameExistException;
 import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.menu.repository.MenuRepository;
+import com.ggiit.easyblog.project.system.role.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 菜单业务层实现
@@ -37,6 +40,15 @@ public class MenuServiceImpl implements MenuService {
         return menuRepository.getOne(id);
     }
 
+    /**
+     * 查询所有菜单
+     *
+     * @return 菜单集合
+     */
+    @Override
+    public List<Menu> findList() {
+        return menuRepository.findAll();
+    }
 
     /**
      * 查询分页数据
