@@ -40,6 +40,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private AuthenticationSuccessHandler successHandler;
+
+    @Autowired
+    private AuthenticationFailHandler failHandler;
+
+
+    @Autowired
+    private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
+
     @Override
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
@@ -68,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 //.loginPage("/xboot/common/needLogin")
                 //登录请求url
-                //.loginProcessingUrl("/xboot/login")
+                .loginProcessingUrl("/xboot/login")
                 .permitAll()
                 //成功处理类
                 .successHandler(successHandler)
@@ -93,12 +103,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 //自定义权限拒绝处理类
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
-                .and()
+                //.exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+                //.and()
                 //添加自定义权限过滤器
                 .addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class)
                 //添加JWT过滤器 除已配置的其它请求都需经过此过滤器
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(), tokenRedis, tokenExpireTime, storePerms,
-                        redisTemplate, securityUtil));
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(), null));
     }
 }

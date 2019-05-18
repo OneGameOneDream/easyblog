@@ -69,8 +69,11 @@ public enum ResponseCode {
     /**
      * 用户名不存在
      */
-    INIT_JWT_USER_ERROR(17004, "初始化JwtUser失败");
-
+    INIT_JWT_USER_ERROR(17004, "初始化JwtUser失败"),
+    /**
+     * Token解析失败
+     */
+    TOKEN_ERROR(17005, "Token解析失败");
 
     private int code;
     private String msg;

@@ -3,6 +3,7 @@ package com.ggiit.easyblog.framework.web.exception;
 import com.ggiit.easyblog.common.constant.ResponseCode;
 import com.ggiit.easyblog.common.exception.*;
 import com.ggiit.easyblog.framework.web.entity.ApiResult;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -73,6 +74,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InitJwtUserException.class)
     public ApiResult initJwtUserException() {
         return ApiResult.error(ResponseCode.INIT_JWT_USER_ERROR);
+    }
+
+    /**
+     * Token解析失败
+     */
+    @ExceptionHandler(TokenException.class)
+    public ApiResult tokenException() {
+        return ApiResult.error(ResponseCode.TOKEN_ERROR);
+    }
+
+    /**
+     * Token认证失败
+     */
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ApiResult expiredJwtException() {
+        return ApiResult.error(ResponseCode.AUTH_ERROR);
     }
 
 
