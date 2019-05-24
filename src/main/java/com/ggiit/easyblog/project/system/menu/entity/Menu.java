@@ -1,16 +1,12 @@
 package com.ggiit.easyblog.project.system.menu.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
-import com.ggiit.easyblog.project.system.role.entity.Role;
-import lombok.*;
-import org.hibernate.annotations.Proxy;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.Set;
 
 /**
  * 菜单权限实体
@@ -20,10 +16,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "T_SYS_MENU")
-@Getter
-@Setter
-@NoArgsConstructor
-@Proxy(lazy = false)
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Menu extends BaseEntity {
     /**
      * 菜单名称
@@ -65,11 +59,4 @@ public class Menu extends BaseEntity {
      */
     @Column(name = "ICON_", length = 100)
     private String icon;
-
-    /**
-     * 菜单拥有角色集合
-     */
-    @JsonIgnore
-    @ManyToMany(mappedBy = "menuSet")
-    private Set<Role> roleSet;
 }

@@ -5,6 +5,7 @@ import com.ggiit.easyblog.common.exception.*;
 import com.ggiit.easyblog.framework.web.entity.ApiResult;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -92,14 +93,21 @@ public class GlobalExceptionHandler {
         return ApiResult.error(ResponseCode.AUTH_ERROR);
     }
 
+    /**
+     * 密碼錯誤
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ApiResult badCredentialsException() {
+        return ApiResult.error(ResponseCode.PASSWORD_ERROR);
+    }
+
 
     /**
      * 系统异常
      */
-//    @ExceptionHandler(Exception.class)
-//
-//    public ApiResult handleException() {
-//        return ApiResult.error(ResponseCode.SERVER_ERROR);
-//    }
+    @ExceptionHandler(Exception.class)
+    public ApiResult handleException() {
+        return ApiResult.error(ResponseCode.SERVER_ERROR);
+    }
 
 }

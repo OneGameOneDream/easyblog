@@ -1,15 +1,13 @@
 package com.ggiit.easyblog.project.system.role.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
-import com.ggiit.easyblog.project.system.menu.entity.Menu;
-import com.ggiit.easyblog.project.system.user.entity.User;
-import lombok.*;
-import org.hibernate.annotations.Proxy;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * 角色实体类
@@ -19,10 +17,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "T_SYS_ROLE")
-@Getter
-@Setter
-@NoArgsConstructor
-@Proxy(lazy = false)
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Role extends BaseEntity {
     /**
      * 角色名称
@@ -32,7 +28,7 @@ public class Role extends BaseEntity {
     /**
      * 角色权限字符串标识
      */
-    @Column(name = "KEY_", nullable = false, length = 100)
+    @Column(name = "KEY_", nullable = false, length = 50)
     private String key;
     /**
      * 显示顺序
@@ -42,23 +38,7 @@ public class Role extends BaseEntity {
     /**
      * 角色状态：1正常、0停用
      */
-    @Column(name = "STATE_", nullable = false)
+    @Column(name = "STATE_", nullable = false, length = 1)
     private Boolean state;
-    /**
-     * 角色拥有用户集合
-     */
-    @JsonIgnore
-    @ManyToMany(mappedBy = "roleSet")
-    private Set<User> userSet;
 
-    /**
-     * 菜单权限集合
-     */
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "T_SYS_ROLE_MENU",
-            joinColumns = {@JoinColumn(name = "ROLE_ID_", referencedColumnName = "ID_")},
-            inverseJoinColumns = {@JoinColumn(name = "MENU_ID_", referencedColumnName = "ID_")})
-    private Set<Menu> menuSet;
 }

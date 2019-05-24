@@ -73,7 +73,12 @@ public enum ResponseCode {
     /**
      * Token解析失败
      */
-    TOKEN_ERROR(17005, "Token解析失败");
+    TOKEN_ERROR(17005, "Token解析失败"),
+    /**
+     * 密码错误
+     */
+    PASSWORD_ERROR(17006, "密码错误");
+
 
     private int code;
     private String msg;

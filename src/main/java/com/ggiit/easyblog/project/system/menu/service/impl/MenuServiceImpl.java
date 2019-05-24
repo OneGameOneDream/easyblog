@@ -1,17 +1,25 @@
-package com.ggiit.easyblog.project.system.menu.service;
+package com.ggiit.easyblog.project.system.menu.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.exception.MenuNameExistException;
 import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.menu.repository.MenuRepository;
+import com.ggiit.easyblog.project.system.menu.service.MenuService;
+import com.ggiit.easyblog.project.system.relation.entity.RoleMenu;
+import com.ggiit.easyblog.project.system.relation.entity.UserRole;
+import com.ggiit.easyblog.project.system.relation.repository.RoleMenuRepository;
+import com.ggiit.easyblog.project.system.relation.repository.UserRoleRepository;
 import com.ggiit.easyblog.project.system.role.entity.Role;
+import com.ggiit.easyblog.project.system.role.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 菜单业务层实现
@@ -27,6 +35,22 @@ public class MenuServiceImpl implements MenuService {
      */
     @Autowired
     private MenuRepository menuRepository;
+    /**
+     * 角色持久层对象
+     */
+    @Autowired
+    private RoleRepository roleRepository;
+    /**
+     * 角色菜单持久层对象
+     */
+    @Autowired
+    private RoleMenuRepository roleMenuRepository;
+
+    /**
+     * 用户角色持久层对象
+     */
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
 
     /**
@@ -138,5 +162,47 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Menu findByName(String menuName) {
         return menuRepository.findByName(menuName);
+    }
+
+    /**
+     * 根据角色id获取菜单集合
+     *
+     * @param roleId 角色id
+     * @return 菜单集合
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<Menu> findMenusByRoleId(String roleId) {
+        List<String> menuIds = new ArrayList<>();
+        return roleMenuRepository.findByRoleId(roleId).map(list -> {
+            for (RoleMenu roleMenu : list) {
+                menuIds.add(roleMenu.getMenuId());
+            }
+            return menuRepository.findByIdIn(menuIds);
+        }).orElse(new ArrayList<>());
+    }
+
+    /**
+     * 根据用户id获取菜单集合
+     *
+     * @param userId 用户id
+     * @return 菜单集合
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<Menu> findMenusByUserId(String userId) {
+        List<String> roleIds = new ArrayList<>();
+        List<Menu> menus = new ArrayList<>();
+        List<Role> roles = userRoleRepository.findByUserId(userId).map(list -> {
+            for (UserRole userRole : list) {
+                roleIds.add(userRole.getRoleId());
+            }
+            return roleRepository.findByIdIn(roleIds);
+        }).orElse(new ArrayList<>());
+        for (Role role : roles) {
+            menus.addAll(findMenusByRoleId(role.getId()));
+        }
+        //去重复
+        return menus.stream().distinct().collect(Collectors.toList());
     }
 }

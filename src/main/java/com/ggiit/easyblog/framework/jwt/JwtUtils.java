@@ -4,12 +4,13 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.ggiit.easyblog.common.exception.InitJwtUserException;
+import com.ggiit.easyblog.framework.jwt.entity.JwtProperties;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -96,15 +97,10 @@ public class JwtUtils {
 
 
     /**
-     * 密匙key
+     * jwt配置
      */
-    @Value("${jwt.secret}")
-    private String secret;
-    /**
-     * 过期时间
-     */
-    @Value("${jwt.expiration}")
-    private Long expiration;
+    @Autowired
+    private JwtProperties jwtProperties;
 
     /**
      * 解析Token获取用户
@@ -263,7 +259,7 @@ public class JwtUtils {
      * @return
      */
     private String generateAccessToken(String subject, Map<String, Object> claims) {
-        return generateToken(subject, claims, expiration);
+        return generateToken(subject, claims, jwtProperties.getExpiration());
     }
 
     /**
@@ -332,7 +328,7 @@ public class JwtUtils {
      * @return Token
      */
     private String generateRefreshToken(String subject, Map<String, Object> claims) {
-        return generateToken(subject, claims, expiration);
+        return generateToken(subject, claims, jwtProperties.getExpiration());
     }
 
     /**
@@ -374,7 +370,7 @@ public class JwtUtils {
     public SecretKey generalKey() {
         try {
             // 一般服务端自定义一个KEY值，转换成byte[] 再转成SecretKey
-            String mySecretBase64 = Base64.decodeStr(secret);
+            String mySecretBase64 = Base64.decodeStr(jwtProperties.getSecret());
             String stringKey = "UnWhVr6cKjw5gzwnR6j5FjYpox6kRoyHbvaTwcfexb11QrKrvVeoGGP3YD3cxlKvyJL6lrK0XX0oMGcA5nPIq7ucGeUFFZ7sIuR" + mySecretBase64;
             byte[] encodedKey = Base64.decode(stringKey);
             SecretKey key = Keys.hmacShaKeyFor(encodedKey);

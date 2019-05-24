@@ -1,4 +1,4 @@
-package com.ggiit.easyblog.project.system.user.service;
+package com.ggiit.easyblog.project.system.user.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.constant.WebKeys;
@@ -6,10 +6,13 @@ import com.ggiit.easyblog.common.exception.EmailExistException;
 import com.ggiit.easyblog.common.exception.UsernameExistException;
 import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
+import com.ggiit.easyblog.project.system.menu.service.MenuService;
 import com.ggiit.easyblog.project.system.role.entity.Role;
+import com.ggiit.easyblog.project.system.role.service.RoleService;
 import com.ggiit.easyblog.project.system.user.entity.User;
 import com.ggiit.easyblog.project.system.user.query.UserQuery;
 import com.ggiit.easyblog.project.system.user.repository.UserRepository;
+import com.ggiit.easyblog.project.system.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +39,16 @@ public class UserServiceImpl implements UserService {
      */
     @Autowired
     private UserRepository userRepository;
+    /**
+     * 角色业务层对象
+     */
+    @Autowired
+    private RoleService roleService;
+    /**
+     * 菜单业务层对象
+     */
+    @Autowired
+    private MenuService menuService;
 
     /**
      * 用户查询器对象
@@ -181,14 +194,18 @@ public class UserServiceImpl implements UserService {
         // 而且它没有Shiro的那种从属关系，即一个角色包含哪些权限等等。
         // 在Security看来角色和权限时一样的，它认证的时候，把所有权限（角色、权限）都取出来，而不是分开验证。)
         List<GrantedAuthority> authorities = new ArrayList<>();
+        //通过用户集合查询其拥有角色集合
+        List<Role> roles = roleService.findRolesByUserId(user.getId());
         //用户角色
-        for (Role role : user.getRoleSet()) {
+        for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(WebKeys.ROLE_PREFIX + role.getKey()));
-            //获取用户的菜单权限
-            for (Menu menu : role.getMenuSet()) {
-                if (!StrUtil.isBlank(menu.getPermission())) {
-                    authorities.add(new SimpleGrantedAuthority(menu.getPermission()));
-                }
+        }
+        //通过角色集合查询其拥有菜单
+        List<Menu> menus = menuService.findMenusByUserId(user.getId());
+        //获取用户的菜单权限
+        for (Menu menu : menus) {
+            if (!StrUtil.isBlank(menu.getPermission())) {
+                authorities.add(new SimpleGrantedAuthority(menu.getPermission()));
             }
         }
         return authorities;

@@ -5,6 +5,8 @@ import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 菜单持久层
  *
@@ -20,4 +22,15 @@ public interface MenuRepository extends JpaRepository<Menu, String> {
      * @return Menu 菜单对象
      */
     Menu findByName(String menuName);
+
+
+    /**
+     * 根据菜单id集合查询菜单集合
+     *
+     * @param menuIds 菜单id集合
+     * @return 菜单集合
+     */
+    List<Menu> findByIdIn(List<String> menuIds);
+
+
 }

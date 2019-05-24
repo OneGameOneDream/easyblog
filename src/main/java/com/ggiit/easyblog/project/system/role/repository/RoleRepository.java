@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * 角色持久层
@@ -15,6 +14,14 @@ import java.util.Set;
  */
 @Repository
 public interface RoleRepository extends JpaRepository<Role, String> {
+
+    /**
+     * 根据角色id集合查询角色集合
+     * @param roleIds 角色id集合
+     * @return 角色集合
+     */
+    List<Role> findByIdIn(List<String> roleIds);
+
     /**
      * 根据角色名查询角色
      *

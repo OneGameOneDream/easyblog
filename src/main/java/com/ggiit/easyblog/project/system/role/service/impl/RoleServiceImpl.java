@@ -1,15 +1,19 @@
-package com.ggiit.easyblog.project.system.role.service;
+package com.ggiit.easyblog.project.system.role.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.exception.RoleNameExistException;
 import com.ggiit.easyblog.common.util.page.PageUtil;
+import com.ggiit.easyblog.project.system.relation.entity.UserRole;
+import com.ggiit.easyblog.project.system.relation.repository.UserRoleRepository;
 import com.ggiit.easyblog.project.system.role.entity.Role;
 import com.ggiit.easyblog.project.system.role.repository.RoleRepository;
+import com.ggiit.easyblog.project.system.role.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +32,12 @@ public class RoleServiceImpl implements RoleService {
      */
     @Autowired
     private RoleRepository roleRepository;
+    /**
+     * 用户角色关系持久层对象
+     */
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
 
     /**
      * 通过id查询角色
@@ -142,7 +152,26 @@ public class RoleServiceImpl implements RoleService {
      * @return role 角色对象
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Role findByName(String roleName) {
         return roleRepository.findByName(roleName);
+    }
+
+    /**
+     * 根据用户id查询其拥有角色集合
+     *
+     * @param userId 用户id
+     * @return 角色集合
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<Role> findRolesByUserId(String userId) {
+        List<String> roleIds = new ArrayList<>();
+        return userRoleRepository.findByUserId(userId).map(list -> {
+            for (UserRole userRole : list) {
+                roleIds.add(userRole.getRoleId());
+            }
+            return roleRepository.findByIdIn(roleIds);
+        }).orElse(new ArrayList<>());
     }
 }

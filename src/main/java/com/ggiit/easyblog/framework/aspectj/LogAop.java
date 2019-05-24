@@ -109,6 +109,7 @@ public class LogAop {
         // 记录本地异常日志
         log.error("方法调用异常");
         log.error("异常信息：{}", e.getMessage());
+        log.info("方法执行时间：{}毫秒", (System.currentTimeMillis() - startTime.get()));
         log.info("方法执行结果：{}", WebKeys.METHOD_FAIL);
         log.info("============================方法调用结束============================");
     }

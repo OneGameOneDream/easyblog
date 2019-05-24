@@ -72,4 +72,21 @@ public interface MenuService {
     @Cacheable(key = "'findByName_'+#p0")
     Menu findByName(String menuName);
 
+    /**
+     * 根据角色id获取菜单集合
+     *
+     * @param roleId 角色id
+     * @return 菜单集合
+     */
+    @Cacheable(key = "'findMenusByRoleId_'+#p0")
+    List<Menu> findMenusByRoleId(String roleId);
+
+    /**
+     * 根据用户id获取菜单集合
+     *
+     * @param userId 用户id
+     * @return 菜单集合
+     */
+    @Cacheable(key = "'findMenusByUserId_'+#p0")
+    List<Menu> findMenusByUserId(String userId);
 }

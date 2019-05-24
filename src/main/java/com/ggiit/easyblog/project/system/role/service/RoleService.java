@@ -89,4 +89,13 @@ public interface RoleService {
     @Cacheable(key = "'findByName_'+#p0")
     Role findByName(String roleName);
 
+    /**
+     * 根据用户id查询其拥有角色集合
+     *
+     * @param userId 用户id
+     * @return 角色集合
+     */
+    @Cacheable(key = "'findRolesByUserId_'+#p0")
+    List<Role> findRolesByUserId(String userId);
+
 }
