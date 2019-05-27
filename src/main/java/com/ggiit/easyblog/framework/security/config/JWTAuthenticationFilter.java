@@ -1,10 +1,9 @@
 package com.ggiit.easyblog.framework.security.config;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSON;
-import cn.hutool.json.JSONUtil;
 import com.ggiit.easyblog.common.constant.ResponseCode;
 import com.ggiit.easyblog.common.exception.TokenExpirationException;
+import com.ggiit.easyblog.common.util.response.ResponseUtil;
 import com.ggiit.easyblog.framework.jwt.JwtUtils;
 import com.ggiit.easyblog.framework.jwt.entity.JwtProperties;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
@@ -22,8 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +63,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = getAuthentication(token.replace(jwtProperties.getTokenHead(), ""), response);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (TokenExpirationException t) {
-            throw t;
+            ResponseUtil.out(response,ApiResult.error(ResponseCode.TOKEN_EXPIRATION_ERROR));
         } catch (Exception e) {
             throw e;
         }
@@ -77,7 +74,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     /**
      * 验证用户名密码
      *
-     * @param header   token
+     * @param token    token
      * @param response 响应
      * @return
      */
