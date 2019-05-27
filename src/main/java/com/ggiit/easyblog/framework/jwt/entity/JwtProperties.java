@@ -16,28 +16,20 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
     /**
-     *
+     * 存放Token的Header Key
      */
     private String header;
     /**
-     *
+     * 密匙key
      */
     private String secret;
     /**
-     *
+     * 自定义token 前缀字符
      */
     private String tokenHead;
     /**
-     *
+     * 过期时间   单位秒
      */
     private Long expiration;
-    /**
-     *
-     */
-    private Long accessToken;
-    /**
-     *
-     */
-    private Long refreshToken;
 
 }

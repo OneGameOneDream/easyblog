@@ -77,7 +77,11 @@ public enum ResponseCode {
     /**
      * 密码错误
      */
-    PASSWORD_ERROR(17006, "密码错误");
+    PASSWORD_ERROR(17006, "密码错误"),
+    /**
+     * Token过期
+     */
+    TOKEN_EXPIRATION_ERROR(17007, "Token不存在或过期，请重新登录");
 
 
     private int code;

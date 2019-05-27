@@ -2,15 +2,14 @@ package com.ggiit.easyblog.framework.jwt;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.json.JSONUtil;
 import com.ggiit.easyblog.common.exception.InitJwtUserException;
 import com.ggiit.easyblog.framework.jwt.entity.JwtProperties;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
-import com.ggiit.easyblog.project.system.user.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,10 +23,6 @@ import java.util.*;
  */
 @Component
 public class JwtUtils {
-    /**
-     * 刷新Token的角色
-     */
-    public static final String ROLE_REFRESH_TOKEN = "ROLE_REFRESH_TOKEN";
 
     /**
      * 用户ID
@@ -101,6 +96,8 @@ public class JwtUtils {
      */
     @Autowired
     private JwtProperties jwtProperties;
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
     /**
      * 解析Token获取用户
@@ -213,18 +210,6 @@ public class JwtUtils {
         return expiration.before(new Date());
     }
 
-
-    /**
-     * 是否在上次密码重置之前创建
-     *
-     * @param created
-     * @param lastPasswordReset
-     * @return
-     */
-    private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
-        return (lastPasswordReset != null && created.before(lastPasswordReset));
-    }
-
     /**
      * 生成负载
      *
@@ -292,20 +277,6 @@ public class JwtUtils {
         return authorities;
     }
 
-    /**
-     * 根据用戶对象刷新Token
-     *
-     * @param userDetails 用戶對象
-     * @return Token
-     */
-    public String generateRefreshToken(UserDetails userDetails) {
-        JwtUser user = (JwtUser) userDetails;
-        Map<String, Object> claims = generateClaims(user);
-        // 只授于更新 token 的权限
-        String roles[] = new String[]{ROLE_REFRESH_TOKEN};
-        claims.put(CLAIM_KEY_AUTHORITIES, JSONUtil.toJsonStr(JSONUtil.toJsonStr(roles)));
-        return generateRefreshToken(user.getUsername(), claims);
-    }
 
     /**
      * 根据用户信息 生成token
@@ -319,48 +290,6 @@ public class JwtUtils {
         return generateAccessToken(user.getUsername(), claims);
     }
 
-
-    /**
-     * 根据sub主要信息和负载生成刷新Token
-     *
-     * @param subject 主要信息
-     * @param claims  负载
-     * @return Token
-     */
-    private String generateRefreshToken(String subject, Map<String, Object> claims) {
-        return generateToken(subject, claims, jwtProperties.getExpiration());
-    }
-
-    /**
-     * Token是否可以刷新
-     *
-     * @param token             token
-     * @param lastPasswordReset 密碼最後更改時間
-     * @return true/false
-     */
-    public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
-        final Claims claims = getClaimsFromToken(token);
-        final Date created = claims.getIssuedAt();
-        return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
-                && (!isTokenExpired(token));
-    }
-
-    /**
-     * 根据过期Token刷新Token
-     *
-     * @param token 过期Token
-     * @return 新Token
-     */
-    public String refreshToken(String token) {
-        String refreshedToken;
-        try {
-            final Claims claims = getClaimsFromToken(token);
-            refreshedToken = generateAccessToken(claims.getSubject(), claims);
-        } catch (Exception e) {
-            refreshedToken = null;
-        }
-        return refreshedToken;
-    }
 
     /**
      * 由字符串生成加密key
@@ -394,7 +323,7 @@ public class JwtUtils {
      * @return Token
      */
     private String generateToken(String subject, Map<String, Object> claims, long expiration) {
-        return Jwts.builder()
+        String token = Jwts.builder()
                 // 自定义属性
                 .setClaims(claims)
                 // 主题
@@ -409,28 +338,20 @@ public class JwtUtils {
                 //.compressWith(CompressionCodecs.DEFLATE)
                 .signWith(generalKey())
                 .compact();
+        //入redis(token,username,过期时间)
+        redisTemplate.opsForValue().set(token, subject, expiration);
+        return token;
     }
 
 
     /**
      * 验证Token是否有效
      *
-     * @param token       token
-     * @param userDetails 用戶對象
+     * @param token token
      * @return true/false
      */
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        User user = (User) userDetails;
-        //获取Token负载
-        final Claims claims = getClaimsFromToken(token);
-        final String userId = (String) claims.get(CLAIM_KEY_NICK_NAME);
-        final String username = (String) claims.get(CLAIM_KEY_USER_NAME);
-        // final Date created =  claims.getIssuedAt();
-//         final Date expiration = claims.getExpiration();
-        return (userId.equals(user.getId())
-                && username.equals(user.getUsername())
-                && !isTokenExpired(token)
-                /* && !isCreatedBeforeLastPasswordReset(created, userDetails.getLastPasswordResetDate()) */
-        );
+    public Boolean validateToken(String token) {
+        //判断token是否过期
+        return redisTemplate.hasKey(token);
     }
 }

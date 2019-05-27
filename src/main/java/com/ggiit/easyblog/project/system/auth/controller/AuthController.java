@@ -36,7 +36,7 @@ public class AuthController {
      * 登录授权
      */
     @Log("获取token")
-    @GetMapping("login")
+    @PostMapping("login")
     public ApiResult login(@RequestParam String username, @RequestParam String password) {
 
         // 1 创建UsernamePasswordAuthenticationToken
@@ -50,7 +50,7 @@ public class AuthController {
         UserDetails details = this.userDetailsService.loadUserByUsername(username);
         // 5 生成自定义token
         // 返回 token
-        return ApiResult.success("登录成功",jwtUtils.generateAccessToken(details));
+        return ApiResult.success("登录成功", jwtUtils.generateAccessToken(details));
     }
 
     /**

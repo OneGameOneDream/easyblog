@@ -24,7 +24,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @PropertySource("classpath:application-security.properties")
 @PropertySource("classpath:application-jwt.properties")
 @PropertySource("classpath:application-log.properties")
-@EnableCaching  //开启缓存
+@EnableCaching
 public class EasyblogApplication {
 
     public static void main(String[] args) {

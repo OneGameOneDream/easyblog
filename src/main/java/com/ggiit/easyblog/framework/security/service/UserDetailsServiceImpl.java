@@ -53,7 +53,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @return SpringSecurity安全用户
      */
     private UserDetails createJwtUser(User user) {
-            //JwtUser   jwtUser = new JwtUser(user.getUsername(), user.getNickname(), user.getPassword(), user.getAvatar(), user.getEmail(), user.getState(),user.getPhone(), user.getLoginIp(), user.getLoginDate(), userService.findAuthorities(user));
            JwtUser jwtUser = new JwtUser();
             jwtUser.setUsername(Optional.ofNullable(user.getUsername()).orElse(""));
             jwtUser.setNickname(Optional.ofNullable(user.getNickname()).orElse(""));

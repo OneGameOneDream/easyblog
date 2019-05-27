@@ -101,6 +101,14 @@ public class GlobalExceptionHandler {
         return ApiResult.error(ResponseCode.PASSWORD_ERROR);
     }
 
+    /**
+     * Token过期
+     */
+    @ExceptionHandler(TokenExpirationException.class)
+    public ApiResult tokenExpirationException() {
+        return ApiResult.error(ResponseCode.TOKEN_EXPIRATION_ERROR);
+    }
+
 
     /**
      * 系统异常

@@ -1,19 +1,20 @@
 package com.ggiit.easyblog.framework.security.config;
 
 import cn.hutool.core.util.StrUtil;
-import com.ggiit.easyblog.common.exception.TokenException;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONUtil;
+import com.ggiit.easyblog.common.constant.ResponseCode;
+import com.ggiit.easyblog.common.exception.TokenExpirationException;
 import com.ggiit.easyblog.framework.jwt.JwtUtils;
 import com.ggiit.easyblog.framework.jwt.entity.JwtProperties;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
+import com.ggiit.easyblog.framework.web.entity.ApiResult;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -21,6 +22,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +49,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws TokenExpirationException, IOException, ServletException {
         //获取请求头
         String token = request.getHeader(jwtProperties.getHeader());
         //如果请求头为空，从参数中获取token
@@ -62,6 +65,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         try {
             UsernamePasswordAuthenticationToken authentication = getAuthentication(token.replace(jwtProperties.getTokenHead(), ""), response);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (TokenExpirationException t) {
+            throw t;
         } catch (Exception e) {
             throw e;
         }
@@ -76,7 +81,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
      * @param response 响应
      * @return
      */
-    private UsernamePasswordAuthenticationToken getAuthentication(String token, HttpServletResponse response) {
+    private UsernamePasswordAuthenticationToken getAuthentication(String token, HttpServletResponse response) throws TokenExpirationException {
+        //Token过期
+        if (!jwtUtils.validateToken(token)) {
+            throw new TokenExpirationException();
+        }
 
         // 用户名
         String username = null;
@@ -101,6 +110,4 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
-
 }

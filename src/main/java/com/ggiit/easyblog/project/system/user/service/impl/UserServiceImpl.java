@@ -189,6 +189,7 @@ public class UserServiceImpl implements UserService {
      * @return 权限集合
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Collection<GrantedAuthority> findAuthorities(User user) {
         //权限集合(在Security中，角色和权限共用GrantedAuthority接口，唯一的不同角色就是多了个前缀"ROLE_"[严格区分大小写]，
         // 而且它没有Shiro的那种从属关系，即一个角色包含哪些权限等等。

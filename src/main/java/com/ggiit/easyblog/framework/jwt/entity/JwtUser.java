@@ -70,8 +70,6 @@ public class JwtUser extends BaseEntity implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
 
-
-
     /**
      * 账户是否未过期
      *

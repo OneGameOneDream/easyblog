@@ -39,7 +39,7 @@ public class User extends BaseEntity {
     /**
      * 头像
      */
-    @Column(name = "AVATAR_",length = 200)
+    @Column(name = "AVATAR_", length = 200)
     private String avatar;
     /**
      * Email
