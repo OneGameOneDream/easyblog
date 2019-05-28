@@ -1,8 +1,6 @@
 package com.ggiit.easyblog.framework.security.config;
 
 import cn.hutool.core.util.StrUtil;
-import com.ggiit.easyblog.common.constant.ResponseCode;
-import com.ggiit.easyblog.common.exception.TokenExpirationException;
 import com.ggiit.easyblog.common.util.response.ResponseUtil;
 import com.ggiit.easyblog.framework.jwt.JwtUtils;
 import com.ggiit.easyblog.framework.jwt.entity.JwtProperties;
@@ -46,7 +44,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws TokenExpirationException, IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         //获取请求头
         String token = request.getHeader(jwtProperties.getHeader());
         //如果请求头为空，从参数中获取token
@@ -62,10 +60,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         try {
             UsernamePasswordAuthenticationToken authentication = getAuthentication(token.replace(jwtProperties.getTokenHead(), ""), response);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (TokenExpirationException t) {
-            ResponseUtil.out(response,ApiResult.error(ResponseCode.TOKEN_EXPIRATION_ERROR));
         } catch (Exception e) {
-            throw e;
+            ResponseUtil.out(response, ApiResult.error("登录已失效，请重新登录"));
         }
         //放行
         chain.doFilter(request, response);
@@ -78,12 +74,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
      * @param response 响应
      * @return
      */
-    private UsernamePasswordAuthenticationToken getAuthentication(String token, HttpServletResponse response) throws TokenExpirationException {
-        //Token过期
-        if (!jwtUtils.validateToken(token)) {
-            throw new TokenExpirationException();
-        }
-
+    private UsernamePasswordAuthenticationToken getAuthentication(String token, HttpServletResponse response) {
         // 用户名
         String username = null;
         // 权限

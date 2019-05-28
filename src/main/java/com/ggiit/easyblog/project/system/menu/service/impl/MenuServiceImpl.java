@@ -1,7 +1,7 @@
 package com.ggiit.easyblog.project.system.menu.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.ggiit.easyblog.common.exception.MenuNameExistException;
+import com.ggiit.easyblog.common.exception.EntityExistException;
 import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.menu.repository.MenuRepository;
@@ -96,7 +96,7 @@ public class MenuServiceImpl implements MenuService {
     public Menu update(Menu menu) {
         Menu m = menuRepository.getOne(menu.getId());
         if (menuRepository.findByName(menu.getName()) != null && !menu.getId().equals(m.getId())) {
-            throw new MenuNameExistException();
+            throw new EntityExistException("菜单名称 " + menu.getName() + " 已经存在");
         }
         //动态更新
         //菜单名
@@ -148,7 +148,7 @@ public class MenuServiceImpl implements MenuService {
     @Transactional(rollbackFor = Exception.class)
     public Menu insert(Menu menu) {
         if (menuRepository.findByName(menu.getName()) != null) {
-            throw new MenuNameExistException();
+            throw new EntityExistException("菜单名称 " + menu.getName() + " 已经存在");
         }
         return menuRepository.save(menu);
     }

@@ -2,8 +2,8 @@ package com.ggiit.easyblog.project.system.user.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.constant.WebKeys;
-import com.ggiit.easyblog.common.exception.EmailExistException;
-import com.ggiit.easyblog.common.exception.UsernameExistException;
+import com.ggiit.easyblog.common.exception.EntityNotFoundException;
+import com.ggiit.easyblog.common.exception.EntityExistException;
 import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.menu.service.MenuService;
@@ -22,7 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 用戶业务层实现
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User get(String id) {
-        return userRepository.getOne(id);
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("id 为 " + id + " 的用户没有找到"));
     }
 
 
@@ -91,10 +94,10 @@ public class UserServiceImpl implements UserService {
     public User update(User user) {
         User u = userRepository.getOne(user.getId());
         if (userRepository.findByUsername(user.getUsername()) != null && !user.getId().equals(u.getId())) {
-            throw new UsernameExistException();
+            throw new EntityExistException("用户名 " + user.getUsername() + " 已经存在");
         }
         if (userRepository.findByEmail(user.getEmail()) != null && !user.getId().equals(u.getId())) {
-            throw new EmailExistException();
+            throw new EntityExistException("Email " + user.getEmail() + " 已经存在");
         }
         //动态更新
         //用户名
@@ -150,10 +153,10 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public User insert(User user) {
         if (userRepository.findByUsername(user.getUsername()) != null) {
-            throw new UsernameExistException();
+            throw new EntityExistException("用户名 " + user.getUsername() + " 已经存在");
         }
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            throw new EmailExistException();
+            throw new EntityExistException("Email " + user.getEmail() + " 已经存在");
         }
         return userRepository.save(user);
     }

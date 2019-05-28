@@ -69,7 +69,7 @@ public enum ResponseCode {
     /**
      * 用户名不存在
      */
-    INIT_JWT_USER_ERROR(17004, "初始化JwtUser失败"),
+    INIT_JWT_USER_ERROR(17004, "初始化User失败"),
     /**
      * Token解析失败
      */
@@ -81,7 +81,11 @@ public enum ResponseCode {
     /**
      * Token过期
      */
-    TOKEN_EXPIRATION_ERROR(17007, "Token不存在或过期，请重新登录");
+    TOKEN_EXPIRATION_ERROR(17007, "登录已失效，请重新登录"),
+    /**
+     * 实体未找到
+     */
+    ENTITY_NOT_FOUND_ERROR(17007, "未找到数据");
 
 
     private int code;

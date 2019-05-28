@@ -56,7 +56,7 @@ public class ApiResult {
      * @return 成功消息
      */
     public static ApiResult success() {
-        return ApiResult.success(ResponseCode.SUCCESS.getMsg());
+        return ApiResult.success("成功");
     }
 
     /**
@@ -65,7 +65,7 @@ public class ApiResult {
      * @return 成功消息
      */
     public static ApiResult success(Object value) {
-        return ApiResult.success(ResponseCode.SUCCESS.getMsg(), value);
+        return ApiResult.success("成功", value);
     }
 
     /**
@@ -86,28 +86,7 @@ public class ApiResult {
      * @return 成功消息
      */
     public static ApiResult success(String message, Object value) {
-        return new ApiResult(ResponseCode.SUCCESS.getCode(), message, value);
-    }
-
-    /**
-     * 返回警告消息
-     *
-     * @param message 返回内容
-     * @return 警告消息
-     */
-    public static ApiResult warn(String message) {
-        return ApiResult.warn(message, null);
-    }
-
-    /**
-     * 返回警告消息
-     *
-     * @param message 返回内容
-     * @param value   数据对象
-     * @return 警告消息
-     */
-    public static ApiResult warn(String message, Object value) {
-        return new ApiResult(ResponseCode.SERVER_ERROR.getCode(), message, value);
+        return new ApiResult(200, message, value);
     }
 
     /**
@@ -129,15 +108,6 @@ public class ApiResult {
         return ApiResult.error(message, null);
     }
 
-    /**
-     * 返回错误消息
-     *
-     * @param responseCode 响应对象
-     * @return 警告消息
-     */
-    public static ApiResult error(ResponseCode responseCode) {
-        return new ApiResult(responseCode.getCode(), responseCode.getMsg(), null);
-    }
 
     /**
      * 返回错误消息
@@ -147,6 +117,6 @@ public class ApiResult {
      * @return 警告消息
      */
     public static ApiResult error(String message, Object value) {
-        return new ApiResult(ResponseCode.UNKNOW_ERROR.getCode(), message, value);
+        return new ApiResult(500, message, value);
     }
 }

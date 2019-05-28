@@ -1,7 +1,7 @@
 package com.ggiit.easyblog.project.system.role.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.ggiit.easyblog.common.exception.RoleNameExistException;
+import com.ggiit.easyblog.common.exception.EntityExistException;
 import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.relation.entity.UserRole;
 import com.ggiit.easyblog.project.system.relation.repository.UserRoleRepository;
@@ -82,7 +82,7 @@ public class RoleServiceImpl implements RoleService {
     public Role update(Role role) {
         Role r = roleRepository.getOne(role.getId());
         if (roleRepository.findByName(role.getName()) != null && !role.getId().equals(r.getId())) {
-            throw new RoleNameExistException();
+            throw new EntityExistException("角色名称 " + role.getName() + " 已经存在");
         }
         //动态更新
         //角色名
@@ -118,7 +118,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(rollbackFor = Exception.class)
     public Role insert(Role role) {
         if (roleRepository.findByName(role.getName()) != null) {
-            throw new RoleNameExistException();
+            throw new EntityExistException("角色名称 " + role.getName() + " 已经存在");
         }
         return roleRepository.save(role);
     }

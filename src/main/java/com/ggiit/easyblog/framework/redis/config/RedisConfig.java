@@ -71,7 +71,6 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
 
-
     /**
      * 自定义缓存key生成策略
      *

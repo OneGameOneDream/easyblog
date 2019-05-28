@@ -2,14 +2,13 @@ package com.ggiit.easyblog.framework.jwt;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateUtil;
-import com.ggiit.easyblog.common.exception.InitJwtUserException;
 import com.ggiit.easyblog.framework.jwt.entity.JwtProperties;
 import com.ggiit.easyblog.framework.jwt.entity.JwtUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -97,7 +96,7 @@ public class JwtUtils {
     @Autowired
     private JwtProperties jwtProperties;
     @Autowired
-    StringRedisTemplate redisTemplate;
+    RedisTemplate<Object, Object> redisTemplate;
 
     /**
      * 解析Token获取用户
@@ -108,64 +107,60 @@ public class JwtUtils {
     public JwtUser getUserFromToken(String token) {
         //用户对象
         JwtUser user;
-        try {
-            //获取Token负载
-            final Claims claims = getClaimsFromToken(token);
-            //获取用户id
-            String userId = (String) claims.get(CLAIM_KEY_USER_ID);
-            //获取用户名
-            String username = claims.getSubject();
-            //获取用户昵称
-            String nickname = (String) claims.get(CLAIM_KEY_NICK_NAME);
-            //获取用户头像
-            String avatar = (String) claims.get(CLAIM_KEY_AVATAR);
-            //获取Email
-            String email = (String) claims.get(CLAIM_KEY_EMAIL);
-            //获取用户是否禁用
-            boolean state = (boolean) claims.get(CLAIM_KEY_STATE);
-            //获取用户电话
-            String phone = (String) claims.get(CLAIM_KEY_PHONE);
-            //获取用户最后登陆ip
-            String loginIp = (String) claims.get(CLAIM_KEY_LOGIN_IP);
-            //获取用户最后登陆时间
-            Date loginDate = DateUtil.date((Long) claims.get(CLAIM_KEY_LOGIN_DATE));
-            //获取用户描述
-            String remark = (String) claims.get(CLAIM_KEY_REMARK);
-            //获取权限字符串集合
-            List auths = (List) claims.get(CLAIM_KEY_AUTHORITIES);
-            //权限集合+
-            Collection<? extends GrantedAuthority> authorities = parseArrayToAuthorities(auths);
-            //创建者
-            String createBy = (String) claims.get(CLAIM_CREATE_BY);
-            //创建时间
-            Date createTime = DateUtil.date((Long) claims.get(CLAIM_CREATE_TIME));
-            //修改者
-            String updateBy = (String) claims.get(CLAIM_UPDATE_BY);
-            //修改时间
-            Date updateTime = DateUtil.date((Long) claims.get(CLAIM_UPDATE_TIME));
-            //删除标识
-            boolean delFlag = (boolean) claims.get(CLAIM_DEL_FLAG);
-            user = new JwtUser();
-            //给user赋值
-            user.setId(userId);
-            user.setUsername(username);
-            user.setNickname(nickname);
-            user.setAvatar(avatar);
-            user.setEmail(email);
-            user.setState(state);
-            user.setPhone(phone);
-            user.setLoginIp(loginIp);
-            user.setLoginDate(loginDate);
-            user.setRemark(remark);
-            user.setAuthorities(authorities);
-            user.setCreateBy(createBy);
-            user.setCreateTime(createTime);
-            user.setUpdateBy(updateBy);
-            user.setUpdateTime(updateTime);
-            user.setDelFlag(delFlag);
-        } catch (Exception e) {
-            throw new InitJwtUserException();
-        }
+        //获取Token负载
+        final Claims claims = getClaimsFromToken(token);
+        //获取用户id
+        String userId = (String) claims.get(CLAIM_KEY_USER_ID);
+        //获取用户名
+        String username = claims.getSubject();
+        //获取用户昵称
+        String nickname = (String) claims.get(CLAIM_KEY_NICK_NAME);
+        //获取用户头像
+        String avatar = (String) claims.get(CLAIM_KEY_AVATAR);
+        //获取Email
+        String email = (String) claims.get(CLAIM_KEY_EMAIL);
+        //获取用户是否禁用
+        boolean state = (boolean) claims.get(CLAIM_KEY_STATE);
+        //获取用户电话
+        String phone = (String) claims.get(CLAIM_KEY_PHONE);
+        //获取用户最后登陆ip
+        String loginIp = (String) claims.get(CLAIM_KEY_LOGIN_IP);
+        //获取用户最后登陆时间
+        Date loginDate = DateUtil.date((Long) claims.get(CLAIM_KEY_LOGIN_DATE));
+        //获取用户描述
+        String remark = (String) claims.get(CLAIM_KEY_REMARK);
+        //获取权限字符串集合
+        List auths = (List) claims.get(CLAIM_KEY_AUTHORITIES);
+        //权限集合+
+        Collection<? extends GrantedAuthority> authorities = parseArrayToAuthorities(auths);
+        //创建者
+        String createBy = (String) claims.get(CLAIM_CREATE_BY);
+        //创建时间
+        Date createTime = DateUtil.date((Long) claims.get(CLAIM_CREATE_TIME));
+        //修改者
+        String updateBy = (String) claims.get(CLAIM_UPDATE_BY);
+        //修改时间
+        Date updateTime = DateUtil.date((Long) claims.get(CLAIM_UPDATE_TIME));
+        //删除标识
+        boolean delFlag = (boolean) claims.get(CLAIM_DEL_FLAG);
+        user = new JwtUser();
+        //给user赋值
+        user.setId(userId);
+        user.setUsername(username);
+        user.setNickname(nickname);
+        user.setAvatar(avatar);
+        user.setEmail(email);
+        user.setState(state);
+        user.setPhone(phone);
+        user.setLoginIp(loginIp);
+        user.setLoginDate(loginDate);
+        user.setRemark(remark);
+        user.setAuthorities(authorities);
+        user.setCreateBy(createBy);
+        user.setCreateTime(createTime);
+        user.setUpdateBy(updateBy);
+        user.setUpdateTime(updateTime);
+        user.setDelFlag(delFlag);
         return user;
     }
 
@@ -323,7 +318,7 @@ public class JwtUtils {
      * @return Token
      */
     private String generateToken(String subject, Map<String, Object> claims, long expiration) {
-        String token = Jwts.builder()
+        return Jwts.builder()
                 // 自定义属性
                 .setClaims(claims)
                 // 主题
@@ -338,20 +333,6 @@ public class JwtUtils {
                 //.compressWith(CompressionCodecs.DEFLATE)
                 .signWith(generalKey())
                 .compact();
-        //入redis(token,username,过期时间)
-        redisTemplate.opsForValue().set(token, subject, expiration);
-        return token;
     }
 
-
-    /**
-     * 验证Token是否有效
-     *
-     * @param token token
-     * @return true/false
-     */
-    public Boolean validateToken(String token) {
-        //判断token是否过期
-        return redisTemplate.hasKey(token);
-    }
 }
