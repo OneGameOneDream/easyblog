@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(AccessDeniedException.class)
     public ApiResult accessDeniedException() {
-        return ApiResult.error("无权访问");
+        return ApiResult.error(403,"无权访问");
     }
 
 
@@ -43,6 +43,7 @@ public class GlobalExceptionHandler {
         return ApiResult.error("Token认证失败");
     }
 
+
     /**
      * 密码错误
      */
@@ -52,13 +53,12 @@ public class GlobalExceptionHandler {
     }
 
 
-
     /**
      * 未找到对象
      */
     @ExceptionHandler(EntityNotFoundException.class)
     public ApiResult entityNotFoundException(EntityNotFoundException e) {
-        return ApiResult.error(e.getMessage());
+        return ApiResult.error(404,e.getMessage());
     }
 
 
@@ -69,7 +69,6 @@ public class GlobalExceptionHandler {
     public ApiResult handleException() {
         return ApiResult.error("服务器异常");
     }
-
 
 
 }

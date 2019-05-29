@@ -100,7 +100,6 @@ public interface UserService {
      * @param username 用户名
      * @return user 用户对象
      */
-    @Cacheable(key = "'findByUsername_'+#p0")
     User findByUsername(String username);
 
 }

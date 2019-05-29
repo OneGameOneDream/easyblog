@@ -1,6 +1,5 @@
 package com.ggiit.easyblog.framework.web.entity;
 
-import com.ggiit.easyblog.common.constant.ResponseCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,17 +22,17 @@ public class ApiResult {
      */
     private String message;
     /**
-     * 返回的结果包装在value中，value可以是单个对象
+     * 返回的结果包装在data中，data可以是单个对象
      */
-    private Object value;
+    private Object data;
 
     /**
      * 默认构造
      */
     public ApiResult() {
-        this.code = ResponseCode.SUCCESS.getCode();
-        this.message = ResponseCode.SUCCESS.getMsg();
-        this.value = null;
+        this.code = 200;
+        this.message = "成功";
+        this.data = null;
     }
 
     /**
@@ -41,12 +40,12 @@ public class ApiResult {
      *
      * @param code    状态码
      * @param message 返回信息
-     * @param value   数据对象
+     * @param data   数据对象
      */
-    public ApiResult(int code, String message, Object value) {
+    public ApiResult(int code, String message, Object data) {
         this.code = code;
         this.message = message;
-        this.value = value;
+        this.data = data;
     }
 
 
@@ -64,8 +63,8 @@ public class ApiResult {
      *
      * @return 成功消息
      */
-    public static ApiResult success(Object value) {
-        return ApiResult.success("成功", value);
+    public static ApiResult success(Object data) {
+        return ApiResult.success("成功", data);
     }
 
     /**
@@ -82,11 +81,11 @@ public class ApiResult {
      * 返回成功消息
      *
      * @param message 返回内容
-     * @param value   数据对象
+     * @param data   数据对象
      * @return 成功消息
      */
-    public static ApiResult success(String message, Object value) {
-        return new ApiResult(200, message, value);
+    public static ApiResult success(String message, Object data) {
+        return new ApiResult(200, message, data);
     }
 
     /**
@@ -104,6 +103,16 @@ public class ApiResult {
      * @param message 返回内容
      * @return 警告消息
      */
+    public static ApiResult error(int code, String message) {
+        return new ApiResult(code, message, null);
+    }
+
+    /**
+     * 返回错误消息
+     *
+     * @param message 返回内容
+     * @return 警告消息
+     */
     public static ApiResult error(String message) {
         return ApiResult.error(message, null);
     }
@@ -113,10 +122,10 @@ public class ApiResult {
      * 返回错误消息
      *
      * @param message 返回内容
-     * @param value   数据对象
+     * @param data   数据对象
      * @return 警告消息
      */
-    public static ApiResult error(String message, Object value) {
-        return new ApiResult(500, message, value);
+    public static ApiResult error(String message, Object data) {
+        return new ApiResult(500, message, data);
     }
 }

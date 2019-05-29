@@ -45,7 +45,7 @@ public class PageUtil extends cn.hutool.core.util.PageUtil {
     public static Map toPage(Page page) {
         Map map = new HashMap();
         map.put("content", page.getContent());
-        map.put("totalElements", page.getTotalElements());
+        map.put("total", page.getContent().size());
         return map;
     }
 

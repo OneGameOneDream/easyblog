@@ -1,6 +1,7 @@
 package com.ggiit.easyblog.project.system.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ggiit.easyblog.framework.web.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,6 +35,7 @@ public class User extends BaseEntity {
     /**
      * 密码
      */
+    @JsonIgnore
     @Column(name = "PASSWORD_", nullable = false, length = 50)
     private String password;
     /**

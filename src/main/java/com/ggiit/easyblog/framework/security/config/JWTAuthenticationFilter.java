@@ -61,7 +61,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = getAuthentication(token.replace(jwtProperties.getTokenHead(), ""), response);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            ResponseUtil.out(response, ApiResult.error("登录已失效，请重新登录"));
+            ResponseUtil.out(response, ApiResult.error("凭证无效，请重新登录"));
         }
         //放行
         chain.doFilter(request, response);

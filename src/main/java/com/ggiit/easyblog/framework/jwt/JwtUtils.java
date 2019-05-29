@@ -19,6 +19,9 @@ import java.util.*;
 
 /**
  * JWT工具类
+ *
+ * @author gao
+ * @date 2019.5.29
  */
 @Component
 public class JwtUtils {
@@ -95,6 +98,9 @@ public class JwtUtils {
      */
     @Autowired
     private JwtProperties jwtProperties;
+    /**
+     * Redis模板
+     */
     @Autowired
     RedisTemplate<Object, Object> redisTemplate;
 
@@ -191,18 +197,6 @@ public class JwtUtils {
      */
     private Date generateExpirationDate(long expiration) {
         return new Date(System.currentTimeMillis() + expiration * 1000);
-    }
-
-    /**
-     * Token是否过期
-     *
-     * @param token token
-     * @return true/false
-     */
-    private Boolean isTokenExpired(String token) {
-        final Claims claims = getClaimsFromToken(token);
-        Date expiration = claims.getExpiration();
-        return expiration.before(new Date());
     }
 
     /**

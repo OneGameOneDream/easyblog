@@ -2,6 +2,7 @@ package com.ggiit.easyblog.project.system.menu.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.exception.EntityExistException;
+import com.ggiit.easyblog.common.exception.EntityNotFoundException;
 import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.menu.entity.Menu;
 import com.ggiit.easyblog.project.system.menu.repository.MenuRepository;
@@ -61,7 +62,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public Menu get(String id) {
-        return menuRepository.getOne(id);
+        return menuRepository.findById(id).orElseThrow(()->new EntityNotFoundException("id 为 " + id + " 的菜单没有找到"));
     }
 
     /**

@@ -53,24 +53,24 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @return SpringSecurity安全用户
      */
     private UserDetails createJwtUser(User user) {
-           JwtUser jwtUser = new JwtUser();
-            jwtUser.setUsername(Optional.ofNullable(user.getUsername()).orElse(""));
-            jwtUser.setNickname(Optional.ofNullable(user.getNickname()).orElse(""));
-            jwtUser.setPassword(Optional.ofNullable(user.getPassword()).orElse(""));
-            jwtUser.setAvatar(Optional.ofNullable(user.getAvatar()).orElse(""));
-            jwtUser.setEmail(Optional.ofNullable(user.getEmail()).orElse(""));
-            jwtUser.setState(Optional.ofNullable(user.getState()).orElse(false));
-            jwtUser.setPhone(Optional.ofNullable(user.getPhone()).orElse(""));
-            jwtUser.setLoginIp(Optional.ofNullable(user.getLoginIp()).orElse(""));
-            jwtUser.setLoginDate(Optional.ofNullable(user.getLoginDate()).orElse(null));
-            jwtUser.setAuthorities(Optional.ofNullable(userService.findAuthorities(user)).orElse(null));
-            jwtUser.setId(Optional.ofNullable(user.getId()).orElse(""));
-            jwtUser.setCreateBy(Optional.ofNullable(user.getCreateBy()).orElse(""));
-            jwtUser.setCreateTime(Optional.ofNullable(user.getCreateTime()).orElse(null));
-            jwtUser.setUpdateBy(Optional.ofNullable(user.getUpdateBy()).orElse(""));
-            jwtUser.setUpdateTime(Optional.ofNullable(user.getUpdateTime()).orElse(null));
-            jwtUser.setRemark(Optional.ofNullable(user.getRemark()).orElse(""));
-            jwtUser.setDelFlag(Optional.ofNullable(user.getDelFlag()).orElse(false));
+        JwtUser jwtUser = new JwtUser();
+        jwtUser.setUsername(Optional.ofNullable(user.getUsername()).orElse(""));
+        jwtUser.setNickname(Optional.ofNullable(user.getNickname()).orElse(""));
+        jwtUser.setPassword(Optional.ofNullable(user.getPassword()).orElse(""));
+        jwtUser.setAvatar(Optional.ofNullable(user.getAvatar()).orElse(""));
+        jwtUser.setEmail(Optional.ofNullable(user.getEmail()).orElse(""));
+        jwtUser.setState(Optional.ofNullable(user.getState()).orElse(false));
+        jwtUser.setPhone(Optional.ofNullable(user.getPhone()).orElse(""));
+        jwtUser.setLoginIp(Optional.ofNullable(user.getLoginIp()).orElse(""));
+        jwtUser.setLoginDate(Optional.ofNullable(user.getLoginDate()).orElse(null));
+        jwtUser.setAuthorities(Optional.ofNullable(userService.findAuthorities(user)).orElse(null));
+        jwtUser.setId(Optional.ofNullable(user.getId()).orElse(""));
+        jwtUser.setCreateBy(Optional.ofNullable(user.getCreateBy()).orElse(""));
+        jwtUser.setCreateTime(Optional.ofNullable(user.getCreateTime()).orElse(null));
+        jwtUser.setUpdateBy(Optional.ofNullable(user.getUpdateBy()).orElse(""));
+        jwtUser.setUpdateTime(Optional.ofNullable(user.getUpdateTime()).orElse(null));
+        jwtUser.setRemark(Optional.ofNullable(user.getRemark()).orElse(""));
+        jwtUser.setDelFlag(Optional.ofNullable(user.getDelFlag()).orElse(false));
         return jwtUser;
     }
 

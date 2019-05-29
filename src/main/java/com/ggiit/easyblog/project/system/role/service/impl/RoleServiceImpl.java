@@ -2,6 +2,7 @@ package com.ggiit.easyblog.project.system.role.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.ggiit.easyblog.common.exception.EntityExistException;
+import com.ggiit.easyblog.common.exception.EntityNotFoundException;
 import com.ggiit.easyblog.common.util.page.PageUtil;
 import com.ggiit.easyblog.project.system.relation.entity.UserRole;
 import com.ggiit.easyblog.project.system.relation.repository.UserRoleRepository;
@@ -47,7 +48,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Role get(String id) {
-        return roleRepository.getOne(id);
+        return roleRepository.findById(id).orElseThrow(()->new EntityNotFoundException("id 为 " + id + " 的角色没有找到"));
     }
 
     /**
