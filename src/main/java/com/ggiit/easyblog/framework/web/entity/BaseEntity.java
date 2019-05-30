@@ -75,7 +75,7 @@ public abstract class BaseEntity {
     /**
      * 删除标识：1启用、0删除
      */
-    @Column(name = "DEL_FLAG_", length = 1)
+    @Column(name = "DEL_FLAG_", length = 1,columnDefinition="tinyint default 1")
     private Boolean delFlag;
 
 

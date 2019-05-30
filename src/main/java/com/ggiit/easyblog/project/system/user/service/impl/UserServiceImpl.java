@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * 用戶业务层实现
@@ -92,7 +89,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public User update(User user) {
-        User u = userRepository.getOne(user.getId());
+        User u = userRepository.findById(Optional.ofNullable(user.getId()).orElse("null")).orElseThrow(() -> new EntityNotFoundException("id 为 " + user.getId() + " 的用户没有找到"));
         if (userRepository.findByUsername(user.getUsername()) != null && !user.getId().equals(u.getId())) {
             throw new EntityExistException("用户名 " + user.getUsername() + " 已经存在");
         }

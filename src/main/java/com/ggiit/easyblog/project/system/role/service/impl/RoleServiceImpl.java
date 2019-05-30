@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 角色业务层实现
@@ -81,7 +82,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Role update(Role role) {
-        Role r = roleRepository.getOne(role.getId());
+        Role r =roleRepository.findById(Optional.ofNullable(role.getId()).orElse("null")).orElseThrow(()->new EntityNotFoundException("id 为 " + role.getId() + " 的角色没有找到"));
         if (roleRepository.findByName(role.getName()) != null && !role.getId().equals(r.getId())) {
             throw new EntityExistException("角色名称 " + role.getName() + " 已经存在");
         }

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -62,7 +63,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public Menu get(String id) {
-        return menuRepository.findById(id).orElseThrow(()->new EntityNotFoundException("id 为 " + id + " 的菜单没有找到"));
+        return menuRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("id 为 " + id + " 的菜单没有找到"));
     }
 
     /**
@@ -95,7 +96,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Menu update(Menu menu) {
-        Menu m = menuRepository.getOne(menu.getId());
+        Menu m = menuRepository.findById(Optional.ofNullable(menu.getId()).orElse("null")).orElseThrow(() -> new EntityNotFoundException("id 为 " + menu.getId() + " 的菜单没有找到"));
         if (menuRepository.findByName(menu.getName()) != null && !menu.getId().equals(m.getId())) {
             throw new EntityExistException("菜单名称 " + menu.getName() + " 已经存在");
         }

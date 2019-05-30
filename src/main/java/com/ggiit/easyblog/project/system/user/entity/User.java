@@ -51,7 +51,7 @@ public class User extends BaseEntity {
     /**
      * 状态：1启用、0禁用
      */
-    @Column(name = "STATE_", length = 1)
+    @Column(name = "STATE_", length = 1,columnDefinition="tinyint default 1")
     private Boolean state;
     /**
      * 手机号码
